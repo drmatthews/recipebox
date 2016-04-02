@@ -1,0 +1,11 @@
+{% extends "recipes/base.html" %}
+
+{% block content %}
+
+<form action="{% url 'import_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+	{{ import_form.as_p }}
+    <input type='submit' value='Submit' />
+</form>
+<a href="{% url 'recipes'%}">Back to recipes list</a>
+
+{% endblock %}

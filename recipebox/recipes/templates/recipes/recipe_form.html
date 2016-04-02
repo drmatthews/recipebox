@@ -1,0 +1,32 @@
+{% extends "recipes/base.html" %}
+
+{% block content %}
+
+{% if recipe_id %}
+    <p>editing recipe {{ recipe_id }} </p>
+    <form action="{% url 'edit_recipe' recipe_id %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+{% else %}
+    <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+{% endif %}
+        {% for field in recipe_form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {% ifequal field.label_tag recipe_form.chef.label_tag %}
+                    {{ field.as_hidden }}
+                {% else %}
+                    {{ field.label_tag }} {{ field }}
+                {% endifequal %}
+                {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+		{{ picture_form.as_p }}
+    	{{ ingredient_formset.management_form }}
+    	{{ ingredient_formset.as_p }}
+    	{{ method_formset.management_form }}
+    	{{ method_formset.as_p }}
+        <input type='submit' value='Submit' />
+    </form>
+    <a href="{% url 'recipes'%}">Back to recipes list</a>
+{% endblock %}
