@@ -1,21 +1,38 @@
-{% extends "recipes/base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 
 {% block content %}
 
 {% if recipe_list %}
-    <ul>
+	<div class="add-new">
+		<a class="btn btn-success-outline" href="/recipes/dashboard">Add a new recipe</a>
+	</div>
+	<div class="row">
     {% for recipe in recipe_list %}
-        <li><a href="{% url 'show_recipe' recipe.id %}">{{ recipe.title }}</a></li></br>
-        <li><a href="{% url 'edit_recipe' recipe.id %}">Edit</a></li></br>        
-        <li><a href="{% url 'delete_recipe' recipe.id %}">Delete</a></li></br>
+    	<div class="col-md-3">
+	    	<div class="card text-xs-center">
+	    		<div class="card-block">
+	    			<h5 class="card-title">{{ recipe.title }}</h5>
+	    		</div>
+			    {% if recipe.picture %}
+					<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.picture.url }}" class="card-img preview"></a>
+				{% else %}
+					<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
+				{% endif %}
+				<div class="card-block">
+		        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
+		        	<a class="btn btn-danger btn-sm" href="{% url 'delete_recipe' recipe.id %}">Delete</a>
+		        </div>
+	        </div>
+        </div>
+    {% if forloop.counter|divisibleby:4 %}
+    	</div>
+    	<div class="row">
+    {% endif %}        
     {% endfor %}
-    </ul>
+    </div>
 {% else %}
     <p>No recipes</p>
 {% endif %}
-
-<a href="/recipes/new">Make a new recipe</a>
-<a href="/recipes/import">Import a recipe</a>
 
 {% endblock%}

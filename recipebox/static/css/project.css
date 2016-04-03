@@ -1,3 +1,16 @@
+.main {
+  padding-top: 20px;
+}
+
+.preview {
+  width: 220px;
+  height: auto;
+}
+
+.add-new {
+  padding-bottom: 20px;
+}
+
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;

@@ -1,4 +1,4 @@
-{% extends "recipes/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -9,24 +9,31 @@
     <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
 {% endif %}
         {% for field in recipe_form %}
-            <div class="fieldWrapper">
-                {{ field.errors }}
-                {% ifequal field.label_tag recipe_form.chef.label_tag %}
-                    {{ field.as_hidden }}
-                {% else %}
+            {{ field.errors }}
+            {% ifequal field.label_tag recipe_form.chef.label_tag %}
+                {{ field.as_hidden }}
+            {% else %}
+                <div class="form-group">
                     {{ field.label_tag }} {{ field }}
-                {% endifequal %}
-                {% if field.help_text %}
-                <p class="help">{{ field.help_text|safe }}</p>
-                {% endif %}
+                </div>
+            {% endifequal %}
+            {% if field.help_text %}
+            {{ field.help_text|safe }}
+            {% endif %}
+        {% endfor %}
+    	{{ ingredient_formset.management_form }}
+        {% for ingredient_form in ingredient_formset %}
+            <div class="form-group">
+                {{ ingredient_form }}
             </div>
         {% endfor %}
-		{{ picture_form.as_p }}
-    	{{ ingredient_formset.management_form }}
-    	{{ ingredient_formset.as_p }}
     	{{ method_formset.management_form }}
-    	{{ method_formset.as_p }}
-        <input type='submit' value='Submit' />
+        {% for method_form in method_formset %}
+            <div class="form-group">
+                {{ method_form }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <a href="{% url 'recipes'%}">Back to recipes list</a>
 {% endblock %}

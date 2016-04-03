@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-3">
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills nav-stacked" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#new-recipe" role="tab">New recipe</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#import-recipe" role="tab">Import recipe</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#wine-note" role="tab">Wine note</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-7">
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div class="tab-pane fade in active" id="new-recipe" role="tabpanel">
+          <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+              {% for field in recipe_form %}
+                  {{ field.errors }}
+                  {% if field.label_tag == recipe_form.chef.label_tag %}
+                      {{ field.as_hidden }}
+                  {% elif field.label_tag == recipe_form.source.label_tag %}
+                      {{ field.as_hidden }}
+                  {% else %}
+                      <div class="form-group">
+                          {{ field.label_tag }} {{ field }}
+                      </div>
+                  {% endif %}
+                  {% if field.help_text %}
+                  {{ field.help_text|safe }}
+                  {% endif %}
+              {% endfor %}
+            {{ ingredient_formset.management_form }}
+              {% for ingredient_form in ingredient_formset %}
+                <div class="ingredient-formset">
+                  <div class="form-group">
+                      {% if ingredient_form.instance.pk %}{{ ingredient_form.DELETE }}{% endif %}
+                      {{ ingredient_form }}
+                  </div>
+                </div>
+              {% endfor %}
+            {{ method_formset.management_form }}
+              {% for method_form in method_formset %}
+                <div class="method-formset">
+                  <div class="form-group">
+                      {% if method_form.instance.pk %}{{ method_form.DELETE }}{% endif %}
+                      {{ method_form }}
+                  </div>
+                </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>          
+        </div>
+        <div class="tab-pane fade" id="import-recipe" role="tabpanel">
+          <form action="{% url 'import_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+            <div class="form-group">
+              {{ import_form.as_p }}
+            </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="tab-pane fade" id="wine-notes" role="tabpanel">Wine note</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -18,60 +18,26 @@ import urllib2
 from bs4 import BeautifulSoup
 import cssutils
 
-@login_required(login_url='/recipes/login/')
-def index(request):
-    recipes = Recipe.objects.all()
-    context = {'recipe_list': recipes}
-    return render(request, 'recipes/recipes.html', context)
-
-@login_required(login_url='/recipes/login/')
-def recipe_form(request, recipe_id=None):
-    print "recipe_id",recipe_id
-    if recipe_id:
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
-        recipe_pic = get_object_or_404(RecipePicture, pk=recipe_id)
-        #if recipe.user != request.user:
-        #    return HttpResponseForbidden()
-    else:
-        recipe = Recipe()
-        recipe_pic = RecipePicture()
-
-    if request.POST:
-        recipe_form = RecipeForm(data=request.POST,instance=recipe)
-        picture_form = RecipePictureForm(data=request.POST,instance=recipe_pic)
-        if recipe_form.is_valid():
-            recipe_form.save()
-	    picture_form.save(commit=False)
-	    recipe_pic.recipe = recipe
-            if 'picture' in request.FILES:
-                recipe_pic.picture = request.FILES['picture']
-	    recipe_pic.save()
-            return HttpResponseRedirect(reverse('recipes'))
-
-    else:
-        recipe_form = RecipeForm(instance=recipe)
-	picture_form = RecipePictureForm(instance=recipe_pic)
-
-    return render(request,'recipes/recipe_form.html',\
-		 {'recipe_form': recipe_form,\
-		 'picture_form': picture_form,\
-		 'recipe_id': recipe_id})
-
-@login_required(login_url='/recipes/login/')
-def show_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    return render(request, 'recipes/show_recipe.html', {'recipe':recipe})
+@login_required(login_url='/accounts/login/')
+def dashboard(request, template_name='recipes/dash.html'):
+    recipe_form = RecipeForm()
+    ingredient_formset = IngredientFormSet(instance=Recipe())
+    method_formset = MethodStepFormSet(instance=Recipe())    
+    import_form = ImportForm()
+    context = {'recipe_form': recipe_form, 'ingredient_formset':ingredient_formset,\
+                'method_formset': method_formset, 'import_form':import_form}
+    return render(request, template_name, context)
 
 ############################################
 ##      CRUD
 ############################################
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def recipe_list(request, template_name='recipes/recipes.html'):
-    recipes = Recipe.objects.all()
+    recipes = Recipe.objects.all()    
     context = {'recipe_list': recipes}
     return render(request, template_name, context)
 
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def recipe_show(request, recipe_id, template_name='recipes/show_recipe.html'):
     recipe = get_object_or_404(Recipe, pk=recipe_id)  
     print "recipe", recipe._meta.get_fields()
@@ -91,7 +57,7 @@ def recipe_show(request, recipe_id, template_name='recipes/show_recipe.html'):
                                            'ingredients': ingredients,\
                                            'steps': steps })
 
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def recipe_create(request, template_name='recipes/recipe_form.html'):
 
     recipe = Recipe()
@@ -116,7 +82,7 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
                                                'ingredient_formset': ingredient_formset,\
                                                'method_formset': method_formset})
 
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def recipe_import(request, template_name='recipes/recipe_import.html'):
 
     if request.POST:
@@ -130,7 +96,7 @@ def recipe_import(request, template_name='recipes/recipe_import.html'):
         import_form = ImportForm()
     return render(request, template_name, {'import_form':import_form})
 
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def recipe_update(request, recipe_id, template_name='recipes/recipe_form.html'):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     recipe_form = RecipeForm(request.POST or None, instance=recipe)
@@ -140,7 +106,7 @@ def recipe_update(request, recipe_id, template_name='recipes/recipe_form.html'):
         return redirect('recipes')
     return render(request, template_name, {'recipe_form':recipe_form})#, 'picture_form':picture_form})
 
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def recipe_delete(request, recipe_id, template_name='recipes/recipe_confirm_delete.html'):
     recipe = get_object_or_404(Recipe, pk=recipe_id)   
     if request.method=='POST':
@@ -150,7 +116,7 @@ def recipe_delete(request, recipe_id, template_name='recipes/recipe_confirm_dele
 ##################################################
 
 
-@login_required(login_url='/recipes/login/')
+@login_required(login_url='/accounts/login/')
 def logout(request):
     auth.logout(request)
     messages.add_message(request, messages.INFO, \
@@ -158,7 +124,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('login'))
 
 def custom_login(request):
-    response = login(request,template_name='recipes/login.html')
+    response = login(request,template_name='/accounts/login/')
     if request.user.is_authenticated():
          messages.info(request, "Welcome ...")
     return response
@@ -199,6 +165,11 @@ def register(request):
             'recipes/registration.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
+
+def get_chef_from_taste(soup):
+    #return soup.find('a',{'class':'chef__link'}).contents[0]
+    return "Coles"
+
 def get_ingredients_from_taste(soup):
     section = soup.find('ul','ingredient-table').find_all('li')
     inner_list = []
@@ -220,14 +191,14 @@ def get_image_from_taste(soup):
     img_temp.flush()
     return img_temp
 
-def get_chef_from_bbc(soup):
-    return soup.find('a',{'class':'chef__link'}).contents[0]
-
 def get_description_from_taste(soup):
     return soup.find('div','content-item quote-left-right clearfix').find('p').contents[0]
 
 def get_title_from_taste(soup):
     return soup.find('div','heading').find('h1').contents[0]
+
+def get_chef_from_bbc(soup):
+    return soup.find('a',{'class':'chef__link'}).contents[0]
 
 def get_ingredients_from_bbc(soup): #this is the same as ingredients_from_taste except for label - no cb's
     sections = soup.find_all('ul','recipe-ingredients__list')
@@ -275,8 +246,7 @@ def create_recipe(source,title,chef,description,ingredients,steps,picture):
     recipe.description = description
     recipe.picture.save('test.jpg',File(picture))
     for ingredient in ingredients:
-        recipe.ingredient_set.add(Ingredient(ingredient_name=ingredient))    
-    recipe.save()
+        recipe.ingredient_set.create(ingredient_name=ingredient)    
     
     for step in steps:
         if len(step) > 200:
@@ -284,8 +254,7 @@ def create_recipe(source,title,chef,description,ingredients,steps,picture):
         else:
             step_reduced = step
 
-        recipe.methodstep_set.add(MethodStep(step=step_reduced))         
-    recipe.save()
+        recipe.methodstep_set.create(step=step_reduced)         
 
 def process_url(url,site):
     soup = BeautifulSoup(urllib2.urlopen(url).read())
@@ -303,6 +272,7 @@ def process_url(url,site):
         steps = get_method_from_taste(soup)
         picture = get_image_from_taste(soup)
         description = get_description_from_taste(soup)
+        chef = get_chef_from_taste(soup)
         title = get_title_from_taste(soup)
-        create_recipe(site,title,description,ingredients,steps,picture)
+        create_recipe(site,title,chef,description,ingredients,steps,picture)
 

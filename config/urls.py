@@ -18,9 +18,9 @@ urlpatterns = [
     # User management
     url(r'^users/', include("recipebox.users.urls", namespace="users")),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^recipes/', include('recipebox.recipes.urls')),
 
     # Your stuff: custom urls includes go here
+    url(r'^recipes/', include('recipebox.recipes.urls')),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

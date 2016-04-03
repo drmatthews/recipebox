@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Recipe project{% endblock title %}</title>
+    <title>{% block title %}RecipeBox{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -34,24 +34,26 @@
     <div class="m-b">
       <nav class="navbar navbar-dark navbar-static-top bg-inverse">
         <div class="container">
-          <a class="navbar-brand" href="/">Recipe project</a>
+          <a class="navbar-brand" href="/">RecipeBox</a>
           <button type="button" class="navbar-toggler hidden-sm-up pull-xs-right" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
             &#9776;
           </button>
-
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-toggleable-xs" id="bs-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'home' %}">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'about' %}">About</a>
-              </li>
+            <ul class="nav navbar-nav pull-xs-left">
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'recipes' %}">Recipes</a>
+                </li>              
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Wine notes</a>
+                </li>
+              {% endif %}
             </ul>
 
             <ul class="nav navbar-nav pull-xs-right">
               {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>              
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
                 </li>
@@ -72,7 +74,7 @@
       </nav>
     </div>
 
-    <div class="container">
+    <div class="container main">
 
       {% if messages %}
           {% for message in messages %}
@@ -81,7 +83,6 @@
       {% endif %}
 
       {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
       {% endblock content %}
 
     </div> <!-- /container -->
@@ -105,6 +106,17 @@
 
       <!-- place project specific Javascript in this file -->
       <script src="{% static 'js/project.js' %}"></script>
+      <script src="{% static 'js/jquery.formsets.js' %}"></script>
+      <script>
+          $('.ingredient-formset').formset({
+              addText: 'add link',
+              deleteText: 'remove'
+          });
+          $('.method-formset').formset({
+              addText: 'add link',
+              deleteText: 'remove'
+          });          
+      </script>      
     {% endblock javascript %}
   </body>
 </html>
