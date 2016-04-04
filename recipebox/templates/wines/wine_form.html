@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if wine_id %}
+    <p>editing wine note {{ wine_id }} </p>
+    <form action="{% url 'edit_wine' wine_id %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+{% else %}
+    <form action="{% url 'new_wine' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+{% endif %}
+        {% for field in wine_form %}
+            {{ field.errors }}
+            <div class="form-group">
+                {{ field.label_tag }} {{ field }}
+            </div>
+            {% if field.help_text %}
+            {{ field.help_text|safe }}
+            {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <a href="{% url 'wines'%}">Back to wines list</a>
+{% endblock %}

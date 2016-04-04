@@ -34,4 +34,11 @@ class Ingredient(models.Model):
 class MethodStep(models.Model):
     recipe = models.ForeignKey(Recipe)
     step = models.TextField(max_length=500)
+
+class WineNote(models.Model):
+    user = models.OneToOneField(User, unique=True,null=True)
+    title = models.CharField(max_length=200)
+    producer = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    picture = models.ImageField(blank=True, null=True) #remember to bind to form    
     

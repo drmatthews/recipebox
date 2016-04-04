@@ -67,7 +67,14 @@
               <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
-        <div class="tab-pane fade" id="wine-notes" role="tabpanel">Wine note</div>
+        <div class="tab-pane fade" id="wine-note" role="tabpanel">
+          <form action="{% url 'new_wine' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+              <div class="form-group">
+                  {{ wine_form.as_p }}
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>          
+        </div>
       </div>
     </div>
   </div>

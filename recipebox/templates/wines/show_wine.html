@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<h2>{{ wine.title }}</h2>
+		<p>{{ wine.description }}</p>
+		<p>Wine produced by {{ wine.producer }}</p>
+		<p>Wine description {{ wine.description }}</p>
+
+		{% if wine.picture %}
+			<p><img class="img-fluid img-rounded" src="{{ wine.picture.url }}"></p>
+		{% endif %}
+		<p><a href="{% url 'wines'%}">Back to wines list</a></p>
+	</div>
+</div>
+{% endblock %}

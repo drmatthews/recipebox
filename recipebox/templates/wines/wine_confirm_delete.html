@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<form action="{% url 'delete_wine' wine.id %}" method="post">{% csrf_token %}
+    Are you sure you want to delete "{{ wine.title }}" ?
+    <button type="submit" class="btn btn-danger">Submit</button>
+</form>
+
+<a href="{% url 'wines' %}">Back to wines</a>
+
+{% endblock%}
