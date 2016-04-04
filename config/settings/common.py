@@ -45,7 +45,9 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'recipebox.users',  # custom users app
     # Your stuff: custom apps go here
+    'recipebox.dashboard',
     'recipebox.recipes',
+    'recipebox.wines',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

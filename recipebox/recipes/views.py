@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -9,23 +11,14 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
-from models import Recipe, Ingredient, MethodStep, WineNote
-from forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
-                  UserForm, UserProfileForm, ImportForm, WineNoteForm
+from .models import Recipe, Ingredient, MethodStep
+from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
+                  UserForm, UserProfileForm, ImportForm
 
 import urllib2
 from bs4 import BeautifulSoup
 import cssutils
 
-@login_required(login_url='/accounts/login/')
-def dashboard(request, template_name='recipes/dash.html'):
-    recipe_form = RecipeForm()
-    ingredient_formset = IngredientFormSet(instance=Recipe())
-    method_formset = MethodStepFormSet(instance=Recipe())    
-    import_form = ImportForm()
-    context = {'recipe_form': recipe_form, 'ingredient_formset':ingredient_formset,\
-                'method_formset': method_formset, 'import_form':import_form}
-    return render(request, template_name, context)
 
 ############################################
 ##      CRUD
@@ -104,51 +97,6 @@ def recipe_delete(request, recipe_id, template_name='recipes/recipe_confirm_dele
         return redirect('recipes')
     return render(request, template_name, {'recipe':recipe})
 
-############################################
-##      wines
-############################################
-@login_required(login_url='/accounts/login/')
-def wine_list(request, template_name='recipes/winenotes.html'):
-    wines = WineNote.objects.all()    
-    context = {'wine_list': wines}
-    return render(request, template_name, context)
-
-@login_required(login_url='/accounts/login/')
-def wine_show(request, wine_id, template_name='recipes/show_wine.html'):
-    wine = get_object_or_404(WineNote, pk=wine_id)  
-    return render(request, template_name, {'wine':wine })
-
-@login_required(login_url='/accounts/login/')
-def wine_create(request, template_name='recipes/wine_form.html'):
-
-    wine = WineNote()
-
-    if request.POST:
-        wine_form = WineNoteForm(request.POST,request.FILES, instance=wine)
-        if wine_form.is_valid():           
-            wine.save()
-            return redirect('wines')
-    else:
-        wine_form = WineNoteForm()
-        return render(request, template_name, {'wine_form':wine_form })
-
-@login_required(login_url='/accounts/login/')
-def wine_update(request, wine_id, template_name='recipes/wine_form.html'):
-    wine = get_object_or_404(Recipe, pk=wine_id)
-    wine_form = WineNoteForm(request.POST or None, instance=wine)
-
-    if wine_form.is_valid():
-        wine_form.save()
-        return redirect('wines')
-    return render(request, template_name, {'wine_form':wine_form})
-
-@login_required(login_url='/accounts/login/')
-def wine_delete(request, wine_id, template_name='recipes/wine_confirm_delete.html'):
-    wine = get_object_or_404(WineNote, pk=wine_id)   
-    if request.method=='POST':
-        wine.delete()
-        return redirect('wines')
-    return render(request, template_name, {'wine':wine})    
 ##################################################
 
 @login_required(login_url='/accounts/login/')

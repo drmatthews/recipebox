@@ -8,8 +8,6 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
-from . import recipes.views
-
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -22,6 +20,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
+    url(r'^dashboard/', include('recipebox.dashboard.urls')),    
     url(r'^recipes/', include('recipebox.recipes.urls')),
     url(r'^wines/', include('recipebox.wines.urls')),    
 
