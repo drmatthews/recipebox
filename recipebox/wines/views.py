@@ -26,18 +26,18 @@ import cssutils
 ##      wines
 ############################################
 @login_required(login_url='/accounts/login/')
-def wine_list(request, template_name='recipes/winenotes.html'):
+def wine_list(request, template_name='wines/winenotes.html'):
     wines = WineNote.objects.all()    
     context = {'wine_list': wines}
     return render(request, template_name, context)
 
 @login_required(login_url='/accounts/login/')
-def wine_show(request, wine_id, template_name='recipes/show_wine.html'):
+def wine_show(request, wine_id, template_name='wines/show_wine.html'):
     wine = get_object_or_404(WineNote, pk=wine_id)  
     return render(request, template_name, {'wine':wine })
 
 @login_required(login_url='/accounts/login/')
-def wine_create(request, template_name='recipes/wine_form.html'):
+def wine_create(request, template_name='wines/wine_form.html'):
 
     wine = WineNote()
 
@@ -51,7 +51,7 @@ def wine_create(request, template_name='recipes/wine_form.html'):
         return render(request, template_name, {'wine_form':wine_form })
 
 @login_required(login_url='/accounts/login/')
-def wine_update(request, wine_id, template_name='recipes/wine_form.html'):
+def wine_update(request, wine_id, template_name='wines/wine_form.html'):
     wine = get_object_or_404(Recipe, pk=wine_id)
     wine_form = WineNoteForm(request.POST or None, instance=wine)
 
@@ -61,7 +61,7 @@ def wine_update(request, wine_id, template_name='recipes/wine_form.html'):
     return render(request, template_name, {'wine_form':wine_form})
 
 @login_required(login_url='/accounts/login/')
-def wine_delete(request, wine_id, template_name='recipes/wine_confirm_delete.html'):
+def wine_delete(request, wine_id, template_name='wines/wine_confirm_delete.html'):
     wine = get_object_or_404(WineNote, pk=wine_id)   
     if request.method=='POST':
         wine.delete()

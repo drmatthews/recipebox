@@ -11,11 +11,11 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
-from recipes.models import Recipe, Ingredient, MethodStep
-from wines.models import WineNote
-from recipes.forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
+from recipebox.recipes.models import Recipe, Ingredient, MethodStep
+from recipebox.wines.models import WineNote
+from recipebox.recipes.forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
                           ImportForm
-from wines.forms import WineNoteForm
+from recipebox.wines.forms import WineNoteForm
 
 import urllib2
 from bs4 import BeautifulSoup
