@@ -19,7 +19,6 @@ from recipebox.wines.forms import WineNoteForm
 
 import urllib2
 from bs4 import BeautifulSoup
-import cssutils
 
 @login_required(login_url='/accounts/login/')
 def dashboard(request, template_name='dash.html'):
