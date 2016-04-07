@@ -16,7 +16,6 @@ from .forms import WineNoteForm
 
 import urllib2
 from bs4 import BeautifulSoup
-import cssutils
 
 ############################################
 ##      CRUD

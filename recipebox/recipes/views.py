@@ -17,8 +17,6 @@ from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
 
 import urllib2
 from bs4 import BeautifulSoup
-import cssutils
-
 
 ############################################
 ##      CRUD
