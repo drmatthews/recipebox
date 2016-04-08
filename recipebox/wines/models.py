@@ -8,5 +8,5 @@ class WineNote(models.Model):
     title = models.CharField(max_length=200)
     producer = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    picture = models.ImageField(blank=True, null=True) #remember to bind to form    
+    picture = models.ImageField(upload_to="wine_pictures",blank=True, null=True) #remember to bind to form    
     

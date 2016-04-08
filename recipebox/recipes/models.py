@@ -19,7 +19,7 @@ class Recipe(models.Model):
     source = models.CharField(blank=True,max_length=200)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    picture = models.ImageField(blank=True, null=True) #remember to bind to form
+    picture = models.ImageField(upload_to="recipe_pictures",blank=True, null=True) #remember to bind to form
 
 class RecipePicture(models.Model):
     recipe = models.OneToOneField(Recipe,unique=True)
