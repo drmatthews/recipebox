@@ -29,6 +29,8 @@
                       {{ field.as_hidden }}
                   {% elif field.label_tag == recipe_form.source.label_tag %}
                       {{ field.as_hidden }}
+                  {% elif field.label_tag == recipe_form.picture_url.label_tag %}
+                      {{ field.as_hidden }}                      
                   {% else %}
                       <div class="form-group">
                           {{ field.label_tag }} {{ field }}

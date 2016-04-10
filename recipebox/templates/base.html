@@ -115,7 +115,55 @@
           $('.method-formset').formset({
               addText: 'add link',
               deleteText: 'remove'
-          });          
+          });             
+
+          $("#id_recipe_picture").change(function(){
+            var url_el = $("#id_recipe_picture_url");
+            trigger(this,url_el);
+          }); 
+
+          $("#id_wine_picture").change(function(){
+            var url_el = $("#id_wine_picture_url");
+            trigger(this,url_el);
+          });            
+
+          function trigger(el,url_el){
+            var files = $(el).prop('files');
+            var file = files[0];
+            if(file == null){
+                  alert("No file selected.");
+              }
+              else{
+                  ajax_get_signed_request(url_el,file);
+              }
+          }
+
+          function ajax_get_signed_request(el,file){
+              $.get("{% url 'sign_s3' %}", {"file_name":file.name,"file_type":file.type}, function(data){
+                console.log(data.signed_request)
+                upload_file(el, file, data.signed_request, data.url);
+              },"json")
+              .fail(function() {
+                alert( "image could not be uploaded" );
+              });
+          }          
+
+          function upload_file(el, file, signed_request, url){
+              var xhr = new XMLHttpRequest();
+              xhr.open("PUT", signed_request);
+              xhr.setRequestHeader('x-amz-acl', 'public-read');
+              xhr.onload = function() {
+                  if (xhr.status === 200) {
+                      console.log(url)
+                      console.log(el)
+                      el.val(url);
+                  }
+              };
+              xhr.onerror = function() {
+                  alert("Could not upload file.");
+              };
+              xhr.send(file);
+          }                     
       </script>      
     {% endblock javascript %}
   </body>

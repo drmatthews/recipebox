@@ -8,5 +8,7 @@ from . import views
 urlpatterns = [
 
     url(r'^$', views.dashboard, name='dashboard'),  
+    url(r'^sign_s3/$', views.sign_s3, name='sign_s3'),    
+
 ]
 

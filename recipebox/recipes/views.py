@@ -15,6 +15,7 @@ from .models import Recipe, Ingredient, MethodStep
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
                   UserForm, UserProfileForm, ImportForm
 
+import os                  
 import urllib2
 from bs4 import BeautifulSoup
 
@@ -58,13 +59,19 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
     recipe = Recipe()
 
     if request.POST:
-        recipe_form = RecipeForm(request.POST,request.FILES, instance=recipe)
+        recipe_form = RecipeForm(request.POST, instance=recipe)
         if recipe_form.is_valid():
             ingredient_formset = IngredientFormSet(request.POST, instance=recipe)
             method_formset = MethodStepFormSet(request.POST, instance=recipe)            
             if ingredient_formset.is_valid() and method_formset.is_valid():
                 recipe.chef = request.user.get_username()
                 recipe.source = request.user.get_username()
+                for k,v in recipe_form.iteritems():
+                    print k
+                    print v
+                print "form", recipe_form
+                print "url",recipe_form.cleaned_data['recipe_picture_url']
+                print "path",recipe_form.cleaned_data['recipe_picture']
                 recipe.save()
                 ingredient_formset.save()
                 method_formset.save()
@@ -94,6 +101,7 @@ def recipe_delete(request, recipe_id, template_name='recipes/recipe_confirm_dele
         recipe.delete()
         return redirect('recipes')
     return render(request, template_name, {'recipe':recipe})
+
 
 ##################################################
 
@@ -239,7 +247,7 @@ def create_recipe(source,title,chef,description,ingredients,steps,picture):
     recipe.source = source
     recipe.chef = chef
     recipe.description = description
-    recipe.picture.save('test.jpg',File(picture))
+    recipe.recipe_picture.save('test.jpg',File(picture))
     for ingredient in ingredients:
         recipe.ingredient_set.create(ingredient_name=ingredient)    
     

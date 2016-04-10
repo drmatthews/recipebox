@@ -41,8 +41,9 @@ def wine_create(request, template_name='wines/wine_form.html'):
     wine = WineNote()
 
     if request.POST:
-        wine_form = WineNoteForm(request.POST,request.FILES, instance=wine)
+        wine_form = WineNoteForm(request.POST, instance=wine)
         if wine_form.is_valid():           
+            wine.wine_picture.url = wine_form.cleaned_data['wine_picture_url']
             wine.save()
             return redirect('wines')
     else:
