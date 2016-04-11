@@ -67,10 +67,7 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
             if ingredient_formset.is_valid() and method_formset.is_valid():
                 recipe.chef = request.user.get_username()
                 recipe.source = request.user.get_username()
-                url = recipe_form.cleaned_data['recipe_picture_url']
-                path = request.FILES['recipe_picture'].name
-                print path
-                recipe.recipe_picture.save(os.path.basename(urlparse.urlparse(url).path),File(open(path)))
+                recipe.recipe_picture_url = recipe_form.cleaned_data['recipe_picture_url']
                 recipe.save()
                 ingredient_formset.save()
                 method_formset.save()
