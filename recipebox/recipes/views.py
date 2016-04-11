@@ -15,8 +15,9 @@ from .models import Recipe, Ingredient, MethodStep
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
                   UserForm, UserProfileForm, ImportForm
 
-import os                  
-import urllib2
+import os              
+import urlparse    
+import urllib,urllib2
 from bs4 import BeautifulSoup
 
 ############################################
@@ -66,12 +67,10 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
             if ingredient_formset.is_valid() and method_formset.is_valid():
                 recipe.chef = request.user.get_username()
                 recipe.source = request.user.get_username()
-                for k,v in recipe_form.iteritems():
-                    print k
-                    print v
-                print "form", recipe_form
-                print "url",recipe_form.cleaned_data['recipe_picture_url']
-                print "path",recipe_form.cleaned_data['recipe_picture']
+                url = recipe_form.cleaned_data['recipe_picture_url']
+                path = request.FILES['recipe_picture'].name
+                print path
+                recipe.recipe_picture.save(os.path.basename(urlparse.urlparse(url).path),File(open(path)))
                 recipe.save()
                 ingredient_formset.save()
                 method_formset.save()

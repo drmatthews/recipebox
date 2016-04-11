@@ -15,8 +15,9 @@
 	    		<div class="card-block">
 	    			<h5 class="card-title">{{ recipe.title }}</h5>
 	    		</div>
-			    {% if recipe.picture %}
-					<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.picture.url }}" class="card-img preview"></a>
+			    {% if recipe.recipe_picture %}
+			    	{{ recipe.recipe_picture.url }}
+					<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.recipe_picture.url }}" class="card-img preview"></a>
 				{% else %}
 					<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
 				{% endif %}
