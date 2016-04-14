@@ -74,9 +74,23 @@
           </form>
         </div>
         <div class="tab-pane fade" id="wine-note" role="tabpanel">
+          <label for="id_wine_picture">Wine bottle picture:</label>
+          <input id="id_wine_picture" class="form-control" type="file" name="id_wine_picture">
           <form action="{% url 'new_wine' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
               <div class="form-group">
-                  {{ wine_form.as_p }}
+              {% for field in wine_form %}
+                  {{ field.errors }}
+                  {% if field.label_tag == wine_form.wine_picture_url.label_tag %}
+                      {{ field.as_hidden }}                      
+                  {% else %}
+                      <div class="form-group">
+                          {{ field.label_tag }} {{ field }}
+                      </div>
+                  {% endif %}
+                  {% if field.help_text %}
+                  {{ field.help_text|safe }}
+                  {% endif %}
+              {% endfor %}
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
           </form>          

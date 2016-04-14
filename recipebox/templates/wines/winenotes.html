@@ -15,10 +15,10 @@
 	    		<div class="card-block">
 	    			<h5 class="card-title">{{ wine.title }}</h5>
 	    		</div>
-			    {% if wine.picture %}
-					<a href="{% url 'show_winenote' wine.id %}"><img src="{{ wine.picture.url }}" class="card-img preview"></a>
+			    {% if wine.wine_picture_url %}
+					<a href="{% url 'show_wine' wine.id %}"><img src="{{ wine.wine_picture_url }}" class="card-img preview"></a>
 				{% else %}
-					<a href="{% url 'show_winenote' wine.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
+					<a href="{% url 'show_wine' wine.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
 				{% endif %}
 				<div class="card-block">
 		        	<a class="btn btn-warning btn-sm" href="{% url 'edit_wine' wine.id %}">Edit</a>      
