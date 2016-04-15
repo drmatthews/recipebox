@@ -31,5 +31,26 @@
   .nav.navbar-nav.pull-xs-right {
     float: none !important; } }
 
+  .main-nav li a {
+      border-radius: 5px;
+      padding: 0.5em 1em;
+      text-shadow: none;
+      text-transform: uppercase;
+      /*transition: all 0.25s ease 0s;*/
+  }
+  .main-nav li a:hover {
+      border-style: solid;
+      border-width: 1px;
+      border-color: #5CB85C;
+      /*background-color: #5CB85C;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);*/
+  }
+  .main-nav li.current a {
+      background-color: #5CB85C;
+      /*box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 5px rgba(0, 0, 0, 0.5);*/
+      color: #fff;
+      /*text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);*/
+  }
 [hidden][style="display: block;"] {
   display: block !important; }

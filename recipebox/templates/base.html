@@ -32,13 +32,15 @@
   <body>
 
     <div class="m-b">
-      <nav class="navbar navbar-dark navbar-static-top bg-inverse">
+      <nav class="main-nav navbar navbar-static-top">
         <div class="container">
-          <a class="navbar-brand" href="/">RecipeBox</a>
           <button type="button" class="navbar-toggler hidden-sm-up pull-xs-right" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
             &#9776;
           </button>
             <ul class="nav navbar-nav pull-xs-left">
+              <li class="nav-item current">
+                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+              </li>              
               {% if request.user.is_authenticated %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'recipes' %}">Recipes</a>
@@ -108,6 +110,12 @@
       <script src="{% static 'js/project.js' %}"></script>
       <script src="{% static 'js/jquery.formsets.js' %}"></script>
       <script>
+
+          $('.main-nav ul li a').click(function() {
+              $('ul li.current').removeClass('current');
+              $(this).closest('li').addClass('current');
+          });
+
           $('.ingredient-formset').formset({
               addText: 'add link',
               deleteText: 'remove'
