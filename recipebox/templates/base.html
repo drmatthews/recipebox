@@ -38,7 +38,7 @@
             &#9776;
           </button>
             <ul class="nav navbar-nav pull-xs-left">
-              <li class="nav-item current">
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
               </li>              
               {% if request.user.is_authenticated %}
@@ -115,6 +115,13 @@
               $('ul li.current').removeClass('current');
               $(this).closest('li').addClass('current');
           });
+
+          $('.main-nav ul li a').each(function() {
+            if (this.href == window.location.href) {
+              console.log(this)
+                $(this).closest('li').addClass('current');
+                }
+            });
 
           $('.ingredient-formset').formset({
               addText: 'add link',
