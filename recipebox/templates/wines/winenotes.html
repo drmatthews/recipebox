@@ -13,7 +13,7 @@
 {% block content %}
 
 <div class="add-new">
-	<a class="btn btn-success-outline" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
+	<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
 </div>
 
 {% if wine_list %}
@@ -41,8 +41,6 @@
     {% endif %}        
     {% endfor %}
     </div>
-{% else %}
-    <p>No wine tasting notes</p>
 {% endif %}
 
 {% endblock%}

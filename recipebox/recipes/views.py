@@ -12,6 +12,7 @@ from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
 from .models import Recipe, Ingredient, MethodStep
+from recipebox.wines.models import WineNote
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
                   UserForm, UserProfileForm, ImportForm
 
@@ -58,9 +59,13 @@ def recipe_show(request, recipe_id, template_name='recipes/show_recipe.html'):
 def recipe_create(request, template_name='recipes/recipe_form.html'):
 
     recipe = Recipe()
+    wines = WineNote.objects.all()
+    wine_names = [("","")]
+    for w in wines:
+        wine_names.append((w.title,w.title))
 
     if request.POST:
-        recipe_form = RecipeForm(request.POST, instance=recipe)
+        recipe_form = RecipeForm(request.POST, instance=recipe, wines=wine_names)
         if recipe_form.is_valid():
             ingredient_formset = IngredientFormSet(request.POST, instance=recipe)
             method_formset = MethodStepFormSet(request.POST, instance=recipe)            

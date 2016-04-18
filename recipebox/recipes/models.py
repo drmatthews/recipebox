@@ -19,7 +19,8 @@ class Recipe(models.Model):
     source = models.CharField(blank=True,max_length=200)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    recipe_picture_url = models.CharField(blank=True,max_length=500)    
+    recipe_picture_url = models.CharField(blank=True,max_length=500) 
+    matched_wine = models.CharField(blank=True,max_length=500)    
 
 class RecipePicture(models.Model):
     recipe = models.OneToOneField(Recipe,unique=True)

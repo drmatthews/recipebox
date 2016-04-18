@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from django.forms import ModelForm, CharField, PasswordInput, Form, ChoiceField,\
-                         TextInput, Textarea
+                         TextInput, Textarea, ChoiceField
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 from .models import Recipe, Ingredient, MethodStep, UserProfile
@@ -10,12 +10,17 @@ MAX_INGREDIENTS = 3
 MAX_STEPS = 3
 
 class RecipeForm(ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, wines=None, *args, **kwargs):
         super(RecipeForm, self).__init__(*args, **kwargs)
+
+        self.fields['matched_wine'].choices = wines
+
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
-        })
+        })          
+
+    matched_wine = ChoiceField(required=False,choices=()) 
 
     class Meta:
         model = Recipe
