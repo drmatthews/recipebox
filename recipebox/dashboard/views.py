@@ -29,12 +29,7 @@ from bs4 import BeautifulSoup
 @login_required(login_url='/accounts/login/')
 def dashboard(request, template_name='dash.html'):
 
-    wines = WineNote.objects.all()
-    wine_names = [("","")]
-    for w in wines:
-        wine_names.append((w.title,w.title))
-
-    recipe_form = RecipeForm(wines=wine_names)
+    recipe_form = RecipeForm()
     ingredient_formset = IngredientFormSet(instance=Recipe())
     method_formset = MethodStepFormSet(instance=Recipe())    
     import_form = ImportForm()

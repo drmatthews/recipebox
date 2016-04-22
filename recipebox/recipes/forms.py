@@ -5,22 +5,29 @@ from django.forms import ModelForm, CharField, PasswordInput, Form, ChoiceField,
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 from .models import Recipe, Ingredient, MethodStep, UserProfile
+from recipebox.wines.models import WineNote
 
 MAX_INGREDIENTS = 1
 MAX_STEPS = 1
 
+def get_wines():
+    wines = WineNote.objects.all()
+    wine_names = [("","")]
+    for w in wines:
+        wine_names.append((w.title,w.title)) 
+    return wine_names
+
 class RecipeForm(ModelForm):
-    def __init__(self, wines=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(RecipeForm, self).__init__(*args, **kwargs)
 
-        self.fields['matched_wine'].choices = wines
+        self.fields['matched_wine'] = ChoiceField(
+            choices=get_wines(), required=False )
 
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
         })          
-
-    matched_wine = ChoiceField(required=False,choices=()) 
 
     class Meta:
         model = Recipe

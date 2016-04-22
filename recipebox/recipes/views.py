@@ -71,12 +71,8 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
                 ingredient_formset.save()
                 method_formset.save()
                 return redirect('recipes')
-    else:
-        wines = WineNote.objects.all()
-        wine_names = [("","")]
-        for w in wines:
-            wine_names.append((w.title,w.title))        
-        recipe_form = RecipeForm(wines=wine_names)
+    else:       
+        recipe_form = RecipeForm()
         ingredient_formset = IngredientFormSet(instance=Recipe())
         method_formset = MethodStepFormSet(instance=Recipe())
         return render(request, template_name, {'recipe_form':recipe_form, \
