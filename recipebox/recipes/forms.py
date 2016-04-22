@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 from .models import Recipe, Ingredient, MethodStep, UserProfile
 
-MAX_INGREDIENTS = 3
-MAX_STEPS = 3
+MAX_INGREDIENTS = 1
+MAX_STEPS = 1
 
 class RecipeForm(ModelForm):
     def __init__(self, wines=None, *args, **kwargs):

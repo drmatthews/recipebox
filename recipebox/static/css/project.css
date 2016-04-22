@@ -52,21 +52,30 @@ img.bg {
       border-width: 1px;
       border-color: #fff;      
       padding: 0.5em 1em;
+      color: #449D44;
       text-shadow: none;
       text-transform: uppercase;
       transition: all 0.25s ease 0s;
   }
   .main-nav li a:hover {
-      border-color: #5CB85C;
+      border-color: #449D44;
       /*background-color: #5CB85C;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.1);
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);*/
   }
   .main-nav li.current a {
-      background-color: #5CB85C;
+      background-color: #449D44;
       /*box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 5px rgba(0, 0, 0, 0.5);*/
       color: #fff;
       /*text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);*/
   }
+
+  .green .active a,
+  .green .active a:hover {
+      background-color: #449D44;
+  }  
+  .nav-pills > .active > a, .nav-pills > .active > a:hover {
+      background-color: #449D44;
+  } 
 [hidden][style="display: block;"] {
   display: block !important; }

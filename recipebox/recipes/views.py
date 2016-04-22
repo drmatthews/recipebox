@@ -57,15 +57,9 @@ def recipe_show(request, recipe_id, template_name='recipes/show_recipe.html'):
 
 @login_required(login_url='/accounts/login/')
 def recipe_create(request, template_name='recipes/recipe_form.html'):
-
     recipe = Recipe()
-    wines = WineNote.objects.all()
-    wine_names = [("","")]
-    for w in wines:
-        wine_names.append((w.title,w.title))
-
     if request.POST:
-        recipe_form = RecipeForm(request.POST, instance=recipe, wines=wine_names)
+        recipe_form = RecipeForm(request.POST, instance=recipe)
         if recipe_form.is_valid():
             ingredient_formset = IngredientFormSet(request.POST, instance=recipe)
             method_formset = MethodStepFormSet(request.POST, instance=recipe)            
@@ -78,7 +72,11 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
                 method_formset.save()
                 return redirect('recipes')
     else:
-        recipe_form = RecipeForm()
+        wines = WineNote.objects.all()
+        wine_names = [("","")]
+        for w in wines:
+            wine_names.append((w.title,w.title))        
+        recipe_form = RecipeForm(wines=wine_names)
         ingredient_formset = IngredientFormSet(instance=Recipe())
         method_formset = MethodStepFormSet(instance=Recipe())
         return render(request, template_name, {'recipe_form':recipe_form, \
