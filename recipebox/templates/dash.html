@@ -4,7 +4,8 @@
 {% block additional_styles %}
 <style type="text/css">
   body {
-    background: #7E997E;
+    background-color: transparent; 
+    background: url("{% static 'images/dash.jpg' %}");
   } 
 </style>
 {% endblock %}  
@@ -70,7 +71,7 @@
                   </div>
                 </div>
               {% endfor %}
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <p><button type="submit" class="btn btn-primary">Submit</button></p>
           </form>          
         </div>
         <div class="tab-pane fade" id="import-recipe" role="tabpanel">

@@ -14,7 +14,16 @@ img.bg {
 }
 
 .main {
-  padding-top: 40px;
+  margin-top: 40px;
+  padding-top: 10px;
+  background-color: rgba(151, 142, 137,0.7);
+  border-radius: 10px;
+}
+
+.wrapper {
+  width: 70%;
+  margin-left: auto ;
+  margin-right: auto ;  
 }
 
 .preview {

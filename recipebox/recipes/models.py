@@ -3,6 +3,8 @@ from __future__ import absolute_import
 from django.db import models
 from django.conf import settings
 
+from recipebox.wines.models import WineNote
+
 User = settings.AUTH_USER_MODEL
 
 class UserProfile(models.Model):
@@ -20,7 +22,7 @@ class Recipe(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     recipe_picture_url = models.CharField(blank=True,max_length=500) 
-    matched_wine = models.CharField(blank=True,max_length=500)    
+    matched_wine = models.OneToOneField(WineNote,blank=True,max_length=500)    
 
 class RecipePicture(models.Model):
     recipe = models.OneToOneField(Recipe,unique=True)

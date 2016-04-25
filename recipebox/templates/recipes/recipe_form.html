@@ -2,38 +2,54 @@
 
 {% block content %}
 
+<div class="wrapper">
 {% if recipe_id %}
     <p>editing recipe {{ recipe_id }} </p>
     <form action="{% url 'edit_recipe' recipe_id %}" method='post' enctype="multipart/form-data">{% csrf_token %}
 {% else %}
     <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
 {% endif %}
-        {% for field in recipe_form %}
-            {{ field.errors }}
-            {% ifequal field.label_tag recipe_form.chef.label_tag %}
-                {{ field.as_hidden }}
-            {% else %}
-                <div class="form-group">
-                    {{ field.label_tag }} {{ field }}
-                </div>
-            {% endifequal %}
-            {% if field.help_text %}
-            {{ field.help_text|safe }}
-            {% endif %}
-        {% endfor %}
-    	{{ ingredient_formset.management_form }}
-        {% for ingredient_form in ingredient_formset %}
-            <div class="form-group">
-                {{ ingredient_form }}
-            </div>
-        {% endfor %}
-    	{{ method_formset.management_form }}
-        {% for method_form in method_formset %}
-            <div class="form-group">
-                {{ method_form }}
-            </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      <div class="form-group">
+        <label for="id_recipe_picture">Recipe picture:</label>
+        <input id="id_recipe_picture" class="form-control" type="file" name="id_recipe_picture">                    
+      </div>
+      {% for field in recipe_form %}
+          {{ field.errors }}
+          {% if field.label_tag == recipe_form.chef.label_tag %}
+              {{ field.as_hidden }}
+          {% elif field.label_tag == recipe_form.source.label_tag %}
+              {{ field.as_hidden }}
+          {% elif field.label_tag == recipe_form.recipe_picture_url.label_tag %}
+              {{ field.as_hidden }}                      
+          {% else %}
+              <div class="form-group">
+                  {{ field.label_tag }} {{ field }}
+              </div>
+          {% endif %}
+          {% if field.help_text %}
+          {{ field.help_text|safe }}
+          {% endif %}
+      {% endfor %}
+    {{ ingredient_formset.management_form }}
+      {% for ingredient_form in ingredient_formset %}
+        <div class="ingredient-formset">
+          <div class="form-group">
+              <span>{% if ingredient_form.instance.pk %}{{ ingredient_form.DELETE }}{% endif %}</span>
+              {{ ingredient_form }}
+          </div>
+        </div>
+      {% endfor %}
+    {{ method_formset.management_form }}
+      {% for method_form in method_formset %}
+        <div class="method-formset">
+          <div class="form-group">
+              {% if method_form.instance.pk %}{{ method_form.DELETE }}{% endif %}
+              {{ method_form }}
+          </div>
+        </div>
+      {% endfor %}
+      <p><button type="submit" class="btn btn-primary">Submit</button></p>
+    </form>          
     <a href="{% url 'recipes'%}">Back to recipes list</a>
+</div>
 {% endblock %}

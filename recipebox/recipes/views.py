@@ -83,11 +83,22 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
 def recipe_update(request, recipe_id, template_name='recipes/recipe_form.html'):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     recipe_form = RecipeForm(request.POST or None, instance=recipe)
+    ingredient_formset = IngredientFormSet(request.POST or None, instance=recipe)
+    method_formset = MethodStepFormSet(request.POST or None, instance=recipe)  
+    
+    if recipe_form.is_valid():         
 
-    if recipe_form.is_valid():
-        recipe_form.save()
-        return redirect('recipes')
-    return render(request, template_name, {'recipe_form':recipe_form})#, 'picture_form':picture_form})
+        if ingredient_formset.is_valid() and method_formset.is_valid():
+            recipe.chef = request.user.get_username()
+            recipe.source = request.user.get_username()
+            recipe.recipe_picture_url = recipe_form.cleaned_data['recipe_picture_url']
+            recipe.save()
+            ingredient_formset.save()
+            method_formset.save()
+            return redirect('recipes')
+    return render(request, template_name, {'recipe_form':recipe_form, \
+                                           'ingredient_formset': ingredient_formset,\
+                                           'method_formset': method_formset})
 
 @login_required(login_url='/accounts/login/')
 def recipe_delete(request, recipe_id, template_name='recipes/recipe_confirm_delete.html'):

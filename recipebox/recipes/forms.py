@@ -14,7 +14,7 @@ def get_wines():
     wines = WineNote.objects.all()
     wine_names = [("","")]
     for w in wines:
-        wine_names.append((w.title,w.title)) 
+        wine_names.append((w.id,w.title)) 
     return wine_names
 
 class RecipeForm(ModelForm):
