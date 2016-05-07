@@ -13,7 +13,7 @@
 {% block content %}
 <div class="main">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 dash-nav">
       <!-- Nav tabs -->
       <ul class="nav nav-pills nav-stacked green" role="tablist">
         <li class="nav-item">
@@ -33,9 +33,13 @@
       <div class="tab-content">
         <div class="tab-pane fade in active" id="new-recipe" role="tabpanel">
           <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
-              <div class="form-group">
-                <label for="id_recipe_picture">Recipe picture:</label>
-                <input id="id_recipe_picture" class="form-control" type="file" name="id_recipe_picture">                    
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <span class="btn btn-primary btn-file">
+                    Browse&hellip;<input id="id_recipe_picture" type="file" name="id_recipe_picture">
+                  </span>
+                </span>
+                <input type="text" class="form-control" readonly>
               </div>
               {{ recipe_form.errors }}
               {{ recipe_form.non_field_errors }}
@@ -86,8 +90,14 @@
           </form>
         </div>
         <div class="tab-pane fade" id="wine-note" role="tabpanel">
-          <label for="id_wine_picture">Wine bottle picture:</label>
-          <input id="id_wine_picture" class="form-control" type="file" name="id_wine_picture">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <span class="btn btn-primary btn-file">
+                Browse&hellip;<input id="id_wine_picture" type="file" name="id_wine_picture">
+              </span>
+            </span>
+            <input type="text" class="form-control" readonly>
+          </div>
           <form action="{% url 'new_wine' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
               <div class="form-group">
               {% for field in wine_form %}
