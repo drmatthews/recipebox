@@ -11,37 +11,55 @@
 {% endblock %}  
 
 {% block content %}
-
-<div class="add-new">
-	<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
-</div>
-	
-{% if recipe_list %}
-	<div class="row">
-    {% for recipe in recipe_list %}
-    	<div class="col-md-3">
-	    	<div class="card text-xs-center">
-	    		<div class="card-block">
-	    			<h5 class="card-title">{{ recipe.title }}</h5>
-	    		</div>
-			    {% if recipe.recipe_picture_url %}
-			    	{{ recipe.recipe_picture_url }}
-					<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.recipe_picture_url }}" class="card-img preview"></a>
-				{% else %}
-					<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
-				{% endif %}
-				<div class="card-block">
-		        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
-		        	<a class="btn btn-danger btn-sm" href="{% url 'delete_recipe' recipe.id %}">Delete</a>
+<div class="main">
+	<div class="add-new">
+		<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
+	</div>
+		
+	{% if recipe_list %}
+		<div class="row">
+	    {% for recipe in recipe_list %}
+	    	<div id="recipe_{{ recipe.id }}" class="col-md-3">
+		    	<div class="card text-xs-center">
+		    		<div class="card-block">
+		    			<h5 class="card-title">{{ recipe.title }}</h5>
+		    		</div>
+				    {% if recipe.recipe_picture_url %}
+						<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.recipe_picture_url }}" class="card-img preview"></a>
+					{% else %}
+						<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
+					{% endif %}
+					{% if recipe.user == request.user %}
+					<div class="card-block">
+			        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
+			        	<button onclick="deleteRecipe('{{ recipe.id }}', '{{ recipe.title }}')" class="btn btn-danger btn-sm">Delete</button>
+			        </div>
+			        {% endif %}
 		        </div>
 	        </div>
-        </div>
-    {% if forloop.counter|divisibleby:4 %}
-    	</div>
-    	<div class="row">
-    {% endif %}        
-    {% endfor %}
-    </div>
-{% endif %}
+	    {% if forloop.counter|divisibleby:4 %}
+	    	</div>
+	    	<div class="row">
+	    {% endif %}        
+	    {% endfor %}
+	    </div>
+	    <!-- recipe delete modal -->
+		<div id="confirm" class="modal hide fade" tabindex="-1" role="dialog">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		      </div>
+		      <div class="modal-body">
 
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button id="delete" type="button" class="btn btn-danger">Submit</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->    
+	{% endif %}
+</div>
 {% endblock%}

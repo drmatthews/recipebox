@@ -16,13 +16,13 @@ class UserProfile(models.Model):
         return self.user.username
 
 class Recipe(models.Model):
-    user = models.OneToOneField(User, unique=True,null=True)
+    user = models.ForeignKey(User, null=True)
     chef = models.CharField(blank=True,max_length=200)
     source = models.CharField(blank=True,max_length=200)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     recipe_picture_url = models.CharField(blank=True,max_length=500) 
-    matched_wine = models.OneToOneField(WineNote,blank=True,max_length=500)    
+    matched_wine = models.ForeignKey(WineNote,blank=True,null=True,on_delete=models.SET_NULL,max_length=500)    
 
 class RecipePicture(models.Model):
     recipe = models.OneToOneField(Recipe,unique=True)

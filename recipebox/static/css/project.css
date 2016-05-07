@@ -15,7 +15,7 @@ img.bg {
 
 .main {
   margin-top: 40px;
-  padding-top: 10px;
+  padding: 10px;
   background-color: rgba(151, 142, 137,0.7);
   border-radius: 10px;
 }

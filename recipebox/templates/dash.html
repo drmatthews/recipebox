@@ -11,6 +11,7 @@
 {% endblock %}  
 
 {% block content %}
+<div class="main">
   <div class="row">
     <div class="col-md-3">
       <!-- Nav tabs -->
@@ -36,6 +37,8 @@
                 <label for="id_recipe_picture">Recipe picture:</label>
                 <input id="id_recipe_picture" class="form-control" type="file" name="id_recipe_picture">                    
               </div>
+              {{ recipe_form.errors }}
+              {{ recipe_form.non_field_errors }}
               {% for field in recipe_form %}
                   {{ field.errors }}
                   {% if field.label_tag == recipe_form.chef.label_tag %}
@@ -107,4 +110,5 @@
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

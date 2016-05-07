@@ -1,37 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<div class="row">
-	<div class="col-md-8 col-md-offset-2">
-		<h2>{{ recipe.title }}</h2>
-		<p>{{ recipe.description }}</p>
-		<p>Recipe by {{ recipe.chef }}</p>
-		<p>Recipe source {{ recipe.source }}</p>
-		<p><ul>
-			{% for i in ingredients %}
-				<li>{{ i }}</li>
-			{% endfor %}
-		</ul></p>
-
-		<p><ol>
-			{% for s in steps %}
-				<li>{{ s }}</li>
-			{% endfor %}
-		</ol></p>
-		{% if recipe.recipe_picture_url %}
-			<p><img class="img-fluid img-rounded" src="{{ recipe.recipe_picture_url }}"></p>
-		{% endif %}
-		{% if recipe.matched_wine %}
-			<h4>Matched wine</h4>
-			<p>{{ recipe.matched_wine.title }}</p>
-			<p>{{ recipe.matched_wine.producer }}</p>
-			<p>{{ recipe.matched_wine.description }}</p>
-			{% if recipe.matched_wine.wine_picture_url %}
-				<p><img class="img-fluid img-rounded" src="{{ recipe.matched_wine.wine_picture_url }}"></p>
-			{% endif %}
-		{% endif %}		
-		<p><a href="{% url 'recipes'%}">Back to recipes list</a></p>
+<div class="main">
+	<div class="row">
+		<div class="col-md-4">
+			<h4>{{ recipe.title }}</h4>
+			<p>{{ recipe.description }}</p>
+			<p>Recipe by {{ recipe.chef }}</p>
+			<p>Recipe source {{ recipe.source }}</p>
+			{% if recipe.recipe_picture_url %}
+				<p><img class="img-fluid img-rounded" src="{{ recipe.recipe_picture_url }}"></p>
+			{% endif %}				
+			{% if recipe.matched_wine %}
+				<h4>Matched wine</h4>
+				<p>{{ recipe.matched_wine.title }}</p>
+				<p>{{ recipe.matched_wine.producer }}</p>
+				<p>{{ recipe.matched_wine.description }}</p>
+				{% if recipe.matched_wine.wine_picture_url %}
+					<p><img class="img-fluid img-rounded" src="{{ recipe.matched_wine.wine_picture_url }}"></p>
+				{% endif %}
+			{% endif %}			
+		</div>
+		<div class="col-md-4">
+			<p><ul>
+				{% for i in ingredients %}
+					<li>{{ i }}</li>
+				{% endfor %}
+			</ul></p>
+		</div>
+		<div class="col-md-4">
+			<p><ol>
+				{% for s in steps %}
+					<li>{{ s }}</li>
+				{% endfor %}
+			</ol></p>	
+		</div>
 	</div>
 </div>
 {% endblock %}

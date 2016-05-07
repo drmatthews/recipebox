@@ -17,6 +17,7 @@ urlpatterns = [
     #url(r'^edit/(?P<recipe_id>[0-9]+)/$', views.recipe_form, name='edit_recipe'),
     url(r'^edit/(?P<recipe_id>[0-9]+)/$', views.recipe_update, name='edit_recipe'),
     url(r'^delete/(?P<recipe_id>[0-9]+)/$', views.recipe_delete, name='delete_recipe'),
+    url(r'^delete/$', views.recipe_delete_ajax, name='delete_recipe_ajax'),    
     url(r'^(?P<recipe_id>[0-9]+)/$', views.recipe_show, name='show_recipe'),
 ]
 

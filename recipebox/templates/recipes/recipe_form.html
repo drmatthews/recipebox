@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="wrapper">
+recipe {{ recipe_id }}
 {% if recipe_id %}
     <p>editing recipe {{ recipe_id }} </p>
     <form action="{% url 'edit_recipe' recipe_id %}" method='post' enctype="multipart/form-data">{% csrf_token %}

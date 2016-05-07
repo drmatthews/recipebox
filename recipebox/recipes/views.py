@@ -38,11 +38,7 @@ def recipe_list(request, template_name='recipes/recipes.html'):
 @login_required(login_url='/accounts/login/')
 def recipe_show(request, recipe_id, template_name='recipes/show_recipe.html'):
     recipe = get_object_or_404(Recipe, pk=recipe_id)  
-    print "recipe", recipe._meta.get_fields()
-    print RecipeForm(data=model_to_dict(Recipe.objects.get(pk=recipe_id)))
-    print recipe.ingredient_set.all()[0].ingredient_name
-    #ingredients = get_object_or_404(Ingredient, pk=recipe_id)
-    print "ingredients", Ingredient.objects.filter(id=recipe_id).values() 
+
     ingredients = []
     for i in recipe.ingredient_set.all():
         ingredients.append(i.ingredient_name)
@@ -58,15 +54,18 @@ def recipe_show(request, recipe_id, template_name='recipes/show_recipe.html'):
 @login_required(login_url='/accounts/login/')
 def recipe_create(request, template_name='recipes/recipe_form.html'):
     recipe = Recipe()
+
     if request.POST:
-        recipe_form = RecipeForm(request.POST, instance=recipe)
+        recipe_form = RecipeForm(data=request.POST or None, instance=recipe)
         if recipe_form.is_valid():
             ingredient_formset = IngredientFormSet(request.POST, instance=recipe)
-            method_formset = MethodStepFormSet(request.POST, instance=recipe)            
+            method_formset = MethodStepFormSet(request.POST, instance=recipe)           
             if ingredient_formset.is_valid() and method_formset.is_valid():
                 recipe.chef = request.user.get_username()
                 recipe.source = request.user.get_username()
                 recipe.recipe_picture_url = recipe_form.cleaned_data['recipe_picture_url']
+                if request.user.is_authenticated():
+                    recipe.user = request.user
                 recipe.save()
                 ingredient_formset.save()
                 method_formset.save()
@@ -85,7 +84,7 @@ def recipe_update(request, recipe_id, template_name='recipes/recipe_form.html'):
     recipe_form = RecipeForm(request.POST or None, instance=recipe)
     ingredient_formset = IngredientFormSet(request.POST or None, instance=recipe)
     method_formset = MethodStepFormSet(request.POST or None, instance=recipe)  
-    
+
     if recipe_form.is_valid():         
 
         if ingredient_formset.is_valid() and method_formset.is_valid():
@@ -96,7 +95,7 @@ def recipe_update(request, recipe_id, template_name='recipes/recipe_form.html'):
             ingredient_formset.save()
             method_formset.save()
             return redirect('recipes')
-    return render(request, template_name, {'recipe_form':recipe_form, \
+    return render(request, template_name, {'recipe_id': recipe_id, 'recipe_form':recipe_form, \
                                            'ingredient_formset': ingredient_formset,\
                                            'method_formset': method_formset})
 
@@ -108,6 +107,13 @@ def recipe_delete(request, recipe_id, template_name='recipes/recipe_confirm_dele
         return redirect('recipes')
     return render(request, template_name, {'recipe':recipe})
 
+@login_required(login_url='/accounts/login/')
+def recipe_delete_ajax(request):
+    if request.is_ajax():
+        recipe_id = request.POST['id']
+        recipe = get_object_or_404(Recipe, pk=recipe_id)   
+        recipe.delete()
+        return redirect('recipes')
 
 ##################################################
 
@@ -119,7 +125,10 @@ def recipe_import(request, template_name='recipes/recipe_import.html'):
         if import_form.is_valid():
             url = import_form.cleaned_data['url']
             source = import_form.cleaned_data['source']
-            process_url(url,source)
+            recipe = process_url(url,source)
+            if request.user.is_authenticated():
+                recipe.user = request.user
+            recipe.save()
             return redirect('recipes')
     else:
         import_form = ImportForm()
@@ -247,23 +256,25 @@ def get_description_from_bbc(soup): #this is the same as description_from_taste
 def get_title_from_bbc(soup): #this is the same as title_from_taste
     return soup.find('div','recipe-title--small-spacing').find('h1').contents[0]
 
-def create_recipe(source,title,chef,description,ingredients,steps,picture):
+def create_recipe(source,title,chef,description,ingredients,steps):
     recipe = Recipe()
     recipe.title = title
     recipe.source = source
     recipe.chef = chef
     recipe.description = description
-    recipe.recipe_picture.save('test.jpg',File(picture))
+    recipe.save()
     for ingredient in ingredients:
         recipe.ingredient_set.create(ingredient_name=ingredient)    
     
     for step in steps:
-        if len(step) > 200:
-            step_reduced = step[:200]
-        else:
-            step_reduced = step
+        # if len(step) > 200:
+        #     step_reduced = step[:200]
+        # else:
+        #     step_reduced = step
 
-        recipe.methodstep_set.create(step=step_reduced)         
+        recipe.methodstep_set.create(step=step) 
+    return recipe
+
 
 def process_url(url,site):
     soup = BeautifulSoup(urllib2.urlopen(url).read())
@@ -271,17 +282,18 @@ def process_url(url,site):
     if "bbc" in site:
         ingredients = get_ingredients_from_bbc(soup)
         steps = get_method_from_bbc(soup)
-        picture = get_image_from_bbc(soup)
+        # picture = get_image_from_bbc(soup)
         description = get_description_from_bbc(soup)
         chef = get_chef_from_bbc(soup)
         title = get_title_from_bbc(soup)
-        create_recipe(site,title,chef,description,ingredients,steps,picture)        
+        recipe = create_recipe(site,title,chef,description,ingredients,steps)        
     elif "taste" in site:
         ingredients = get_ingredients_from_taste(soup)
         steps = get_method_from_taste(soup)
-        picture = get_image_from_taste(soup)
+        # picture = get_image_from_taste(soup)
         description = get_description_from_taste(soup)
         chef = get_chef_from_taste(soup)
         title = get_title_from_taste(soup)
-        create_recipe(site,title,chef,description,ingredients,steps,picture)
+        recipe = create_recipe(site,title,chef,description,ingredients,steps)
+    return recipe
 

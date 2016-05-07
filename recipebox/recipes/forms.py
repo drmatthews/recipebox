@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from django.forms import ModelForm, CharField, PasswordInput, Form, ChoiceField,\
-                         TextInput, Textarea, ChoiceField
+                         TextInput, Textarea, ModelChoiceField
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 from .models import Recipe, Ingredient, MethodStep, UserProfile
@@ -17,12 +17,17 @@ def get_wines():
         wine_names.append((w.id,w.title)) 
     return wine_names
 
+class WineNoteModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.title    
+
 class RecipeForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(RecipeForm, self).__init__(*args, **kwargs)
 
-        self.fields['matched_wine'] = ChoiceField(
-            choices=get_wines(), required=False )
+        self.fields['matched_wine'] = WineNoteModelChoiceField(
+            queryset=WineNote.objects.all(), \
+            required=False, empty_label="No matching wine" )
 
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({

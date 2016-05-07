@@ -66,6 +66,14 @@ def wine_delete(request, wine_id, template_name='wines/wine_confirm_delete.html'
     if request.method=='POST':
         wine.delete()
         return redirect('wines')
-    return render(request, template_name, {'wine':wine})    
+    return render(request, template_name, {'wine':wine}) 
+
+@login_required(login_url='/accounts/login/')
+def wine_delete_ajax(request):
+    if request.is_ajax():
+        wine_id = request.POST['id']
+        wine = get_object_or_404(WineNote, pk=wine_id)   
+        wine.delete()
+        return redirect('wines')   
 
 
