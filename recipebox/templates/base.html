@@ -149,12 +149,14 @@
 
         $('.ingredient-formset').formset({
             addText: 'add ingredient',
-            'addCssClass': 'btn btn-success'
+            addCssClass: 'btn btn-success'
         });
 
         $('.method-formset').formset({
             addText: 'add method step',
-            'addCssClass': 'btn btn-success'            
+            deleteText: 'remove method step',
+            addCssClass: 'btn btn-success',
+            deleteCssClass: 'btn btn-danger'            
         });             
 
         $("#id_recipe_picture").change(function(){

@@ -69,9 +69,10 @@
                     {% endfor %}
                 </div>
               {% endfor %}
+            <p></p>
             {{ method_formset.management_form }}
               {% for method_form in method_formset %}
-                <div class="input-group method-formset">
+                <div class="form-group method-formset">
                       {% if method_form.instance.pk %}{{ method_form.DELETE }}{% endif %}
                       {% for meth_field in method_form%}
                         {{ meth_field }}
