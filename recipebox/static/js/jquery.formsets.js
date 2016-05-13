@@ -53,6 +53,7 @@
             },
 
             insertDeleteLink = function(row) {
+                console.log(row.hasClass('input-group'))
                 var delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.'),
                     addCssSelector = $.trim(options.addCssClass).replace(/\s+/g, '.');
                 if (row.is('TR')) {
@@ -63,7 +64,10 @@
                     // If they're laid out as an ordered/unordered list,
                     // insert an <li> after the last list item:
                     row.append('<li><a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a></li>');
-                } else {
+                } else if (row.hasClass('input-group')) {
+                    // If we're using Bootstrap use input group and put <a> in <span>
+                    row.append('<span class="input-group-btn"><a class="btn btn-danger ' + options.deleteCssClass + '" role="button" href="javascript:void(0)"><span class="fa fa-trash" aria-hidden="true"></span></a></span>');
+                } else{
                     // Otherwise, just insert the remove button as the
                     // last child element of the form's container:
                     row.append('<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>');

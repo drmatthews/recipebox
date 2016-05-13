@@ -39,7 +39,7 @@
                     Browse&hellip;<input id="id_recipe_picture" type="file" name="id_recipe_picture">
                   </span>
                 </span>
-                <input type="text" class="form-control" readonly>
+                <input type="text" placeholder="picture to upload ..." class="form-control" readonly>
               </div>
               {{ recipe_form.errors }}
               {{ recipe_form.non_field_errors }}
@@ -53,7 +53,7 @@
                       {{ field.as_hidden }}                      
                   {% else %}
                       <div class="form-group">
-                          {{ field.label_tag }} {{ field }}
+                          {{ field }}
                       </div>
                   {% endif %}
                   {% if field.help_text %}
@@ -62,22 +62,23 @@
               {% endfor %}
             {{ ingredient_formset.management_form }}
               {% for ingredient_form in ingredient_formset %}
-                <div class="ingredient-formset">
-                  <div class="form-group">
-                      {% if ingredient_form.instance.pk %}{{ ingredient_form.DELETE }}{% endif %}
-                      {{ ingredient_form }}
-                  </div>
+                <div class="input-group ingredient-formset">
+                    {% if ingredient_form.instance.pk %}{{ ingredient_form.DELETE }}{% endif %}
+                    {% for ing_field in ingredient_form%}
+                      {{ ing_field }}
+                    {% endfor %}
                 </div>
               {% endfor %}
             {{ method_formset.management_form }}
               {% for method_form in method_formset %}
-                <div class="method-formset">
-                  <div class="form-group">
+                <div class="input-group method-formset">
                       {% if method_form.instance.pk %}{{ method_form.DELETE }}{% endif %}
-                      {{ method_form }}
-                  </div>
+                      {% for meth_field in method_form%}
+                        {{ meth_field }}
+                      {% endfor %}
                 </div>
               {% endfor %}
+              <p></p>
               <p><button type="submit" class="btn btn-primary">Submit</button></p>
           </form>          
         </div>
@@ -114,7 +115,7 @@
                   {% endif %}
               {% endfor %}
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <p><button type="submit" class="btn btn-primary">Submit</button></p>
           </form>          
         </div>
       </div>

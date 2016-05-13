@@ -31,7 +31,8 @@ class RecipeForm(ModelForm):
 
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
-                'class': 'form-control'
+                'class': 'form-control',
+                'placeholder': field
         })          
 
     class Meta:
@@ -79,12 +80,14 @@ MethodStepFormSet = inlineformset_factory(Recipe,\
     can_delete=True,\
     extra=MAX_STEPS,\
     fields=('step',),\
-    widgets={'step': Textarea(attrs={'cols': 80, 'rows': 2, 'class': 'form-control'})})
+    widgets={'step': Textarea(attrs={'cols': 80, 'rows': 2, 'class': 'form-control',\
+             'placeholder': 'method step ...'})})
 
 IngredientFormSet = inlineformset_factory(Recipe,\
     Ingredient,\
     can_delete=True,\
     extra=MAX_INGREDIENTS,\
     fields=('ingredient_name',),\
-    widgets={'ingredient_name': TextInput(attrs={'class': 'form-control'})})
+    widgets={'ingredient_name': TextInput(attrs={'class': 'form-control',\
+              'placeholder': 'ingredient ...'})})
 

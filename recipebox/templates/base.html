@@ -12,6 +12,8 @@
     <!--[if lt IE 9]>
       <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <!-- font awesome cdn -->
+    <script src="https://use.fontawesome.com/94b6880ea7.js"></script>
 
     {% block css %}
     <!-- Latest compiled and minified CSS -->
@@ -146,13 +148,13 @@
           });
 
         $('.ingredient-formset').formset({
-            addText: 'add',
-            deleteText: 'remove'
+            addText: 'add ingredient',
+            'addCssClass': 'btn btn-success'
         });
 
         $('.method-formset').formset({
-            addText: 'add',
-            deleteText: 'remove'
+            addText: 'add method step',
+            'addCssClass': 'btn btn-success'            
         });             
 
         $("#id_recipe_picture").change(function(){
