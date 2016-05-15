@@ -169,6 +169,11 @@
           trigger(this,url_el);
         });            
 
+        $('#preview-button').on('click',function(){
+          var url = $('#id_url').val();
+          $('#preview-frame').attr('src',url);
+        });
+
         function trigger(el,url_el){
           var files = $(el).prop('files');
           var file = files[0];
