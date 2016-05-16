@@ -11,6 +11,9 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import Recipe, Ingredient, MethodStep
 from recipebox.wines.models import WineNote
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
@@ -297,3 +300,16 @@ def process_url(url,site):
         recipe = create_recipe(site,title,chef,description,ingredients,steps)
     return recipe
 
+############################################
+##      recipes - class based views
+############################################
+
+class RecipeList(LoginRequiredMixin,ListView):
+    model = Recipe
+    context_object_name = 'recipe_list'
+    template_name = 'recipes/recipes.html'
+
+class RecipeDetail(LoginRequiredMixin,DetailView):
+    model = Recipe
+    context_object_name = 'recipe'
+    template_name = 'recipes/show_recipe.html'    
