@@ -11,6 +11,8 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
+from django.conf import settings
+
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -35,6 +37,7 @@ from bs4 import BeautifulSoup
 @login_required(login_url='/accounts/login/')
 def recipe_list(request, template_name='recipes/recipes.html'):
     recipes = Recipe.objects.all()    
+    print settings.INSTALLED_APPS
     context = {'recipe_list': recipes}
     return render(request, template_name, context)
 

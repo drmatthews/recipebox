@@ -7,8 +7,8 @@ from . import views
 
 urlpatterns = [
 #    url(r'^$', views.index, name='recipes'),
-    # url(r'^$', views.recipe_list, name='recipes'),
-    url(r'^$', views.RecipeList.as_view(), name='recipes'),
+    url(r'^$', views.recipe_list, name='recipes'),
+    # url(r'^$', views.RecipeList.as_view(), name='recipes'),
     url(r'^login/$',  views.custom_login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^registration', views.register, name='registration'),
