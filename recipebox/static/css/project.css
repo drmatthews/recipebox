@@ -20,6 +20,16 @@ img.bg {
   border-radius: 10px;
 }
 
+.add-new {
+  display: inline-block;
+  padding-bottom: 20px;
+}
+
+.search {
+  display: inline-block;
+  float: right;
+}
+
 .dash-nav {
   padding-top: 10px;
 }
@@ -63,10 +73,6 @@ img.bg {
 input[readonly] {
   background-color: white !important;
   cursor: text !important;
-}
-
-.add-new {
-  padding-bottom: 20px;
 }
 
 .alert-debug {

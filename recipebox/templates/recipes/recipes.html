@@ -11,15 +11,22 @@
 {% endblock %}  
 
 {% block content %}
+
 <div class="main">
 	<div class="add-new">
 		<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
 	</div>
-		
+
+	<div class="search">
+		<div class="input-group">
+		  <input id="search-query" type="text" class="form-control" name="q" placeholder="Search">
+		  <span class="input-group-addon"><span class="fa fa-search" aria-hidden="true"></span></span>
+		</div>
+	</div>
 	{% if recipe_list %}
 		<div class="row">
 	    {% for recipe in recipe_list %}
-	    	<div id="recipe_{{ recipe.id }}" class="col-md-3">
+	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-3">
 		    	<div class="card text-xs-center">
 		    		<div class="card-block">
 		    			<h5 class="card-title">{{ recipe.title }}</h5>

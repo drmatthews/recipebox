@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 from django.contrib import auth,messages
 from django.contrib.auth.decorators import login_required
@@ -12,8 +13,9 @@ from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
 from django.conf import settings
+from django.db.models import Q
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Recipe, Ingredient, MethodStep
@@ -21,7 +23,8 @@ from recipebox.wines.models import WineNote
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
                   UserForm, UserProfileForm, ImportForm
 
-import os              
+import os  
+import operator            
 import urlparse    
 import urllib,urllib2
 from bs4 import BeautifulSoup
@@ -316,3 +319,66 @@ class RecipeDetail(LoginRequiredMixin,DetailView):
     model = Recipe
     context_object_name = 'recipe'
     template_name = 'recipes/show_recipe.html'    
+
+###############################################
+## search
+###############################################
+# class JSONResponseMixin(object):
+#     """
+#     A mixin that can be used to render a JSON response.
+#     """
+#     def render_to_json_response(self, context, **response_kwargs):
+#         """
+#         Returns a JSON response, transforming 'context' to make the payload.
+#         """
+#         return JsonResponse(
+#             self.get_data(context),
+#             **response_kwargs
+#         )
+
+#     def get_data(self, context):
+#         """
+#         Returns an object that will be serialized as JSON by json.dumps().
+#         """
+#         # Note: This is *EXTREMELY* naive; in reality, you'll need
+#         # to do much more complex handling to ensure that arbitrary
+#         # objects -- such as Django model instances or querysets
+#         # -- can be serialized as JSON.
+#         return context
+
+# class RecipeSearchListView(JSONResponseMixin,TemplateView):
+#     model = Recipe
+
+#     def get_queryset(self):
+#         result = super(RecipeSearchListView, self).get_queryset()
+#         print result
+#         query = self.request.GET.get('q')
+#         if query:
+#             query_list = query.split()
+#             result = result.filter(
+#                 reduce(operator.and_,
+#                        (Q(title__icontains=q) for q in query_list)) |
+#                 reduce(operator.and_,
+#                        (Q(description__icontains=q) for q in query_list))
+#             )
+#         ids = [r.id for r in result]
+#         self.data = {'recipe_id_list': ids}
+
+def recipe_search(request):
+
+    result = Recipe.objects.all()
+    query = request.GET.get('q')
+    if query:
+        query_list = query.split()
+        result = result.filter(
+            reduce(operator.and_,
+                   (Q(title__icontains=q) for q in query_list)) |
+            reduce(operator.and_,
+                   (Q(description__icontains=q) for q in query_list))
+        )
+        ids = [r.id for r in result]
+    else:
+        ids = []
+        
+    data = {'recipe_id_list': ids}        
+    return JsonResponse(data)

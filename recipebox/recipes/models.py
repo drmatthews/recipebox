@@ -3,9 +3,6 @@ from __future__ import absolute_import
 from django.db import models
 from django.conf import settings
 
-from djorm_pgfulltext.models import SearchManager
-from djorm_pgfulltext.fields import VectorField
-
 from recipebox.wines.models import WineNote
 
 User = settings.AUTH_USER_MODEL
@@ -26,15 +23,6 @@ class Recipe(models.Model):
     description = models.TextField(blank=True)
     recipe_picture_url = models.CharField(blank=True,max_length=500) 
     matched_wine = models.ForeignKey(WineNote,blank=True,null=True,on_delete=models.SET_NULL,max_length=500)  
-
-    search_index = VectorField()
-
-    objects = SearchManager(
-        fields = ('chef', 'source','title','description'),
-        config = 'pg_catalog.english', # this is default
-        search_field = 'search_index', # this is default
-        auto_update_search_field = True
-    )  
 
 class RecipePicture(models.Model):
     recipe = models.OneToOneField(Recipe,unique=True)
