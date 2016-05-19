@@ -376,9 +376,9 @@ def recipe_search(request):
             reduce(operator.and_,
                    (Q(description__icontains=q) for q in query_list))
         )
-        ids = [r.id for r in result]
+        ids = ['recipe_'+str(r.id) for r in result]
     else:
         ids = []
         
-    data = {'recipe_id_list': ids}        
+    data = {'id_list': ids}        
     return JsonResponse(data)

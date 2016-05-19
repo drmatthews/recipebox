@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 from django.contrib import auth,messages
 from django.contrib.auth.decorators import login_required
@@ -10,10 +11,12 @@ from django.contrib.auth.views import login
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
+from django.db.models import Q
 
 from .models import WineNote
 from .forms import WineNoteForm
 
+import operator
 import urllib2
 from bs4 import BeautifulSoup
 
@@ -75,5 +78,24 @@ def wine_delete_ajax(request):
         wine = get_object_or_404(WineNote, pk=wine_id)   
         wine.delete()
         return redirect('wines')   
+
+def wine_search(request):
+
+    result = WineNote.objects.all()
+    query = request.GET.get('q')
+    if query:
+        query_list = query.split()
+        result = result.filter(
+            reduce(operator.and_,
+                   (Q(title__icontains=q) for q in query_list)) |
+            reduce(operator.and_,
+                   (Q(description__icontains=q) for q in query_list))
+        )
+        ids = ['wine_'+str(r.id) for r in result]
+    else:
+        ids = []
+        
+    data = {'id_list': ids}        
+    return JsonResponse(data)        
 
 

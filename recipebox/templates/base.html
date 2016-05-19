@@ -267,31 +267,60 @@
           });
         }
 
-        $('#search-query').on('change',function() {
-          var query = $('#search-query').val(),
-              recipes = $('.row').find('.recipe'),
-              num_recipes = recipes.length;  
-          $.get("{% url 'recipe_search' %}",{"q": query}, function(data){
-            var num_results = data.recipe_id_list.length
+        function search (search_type){
+
+
+          var query = $('#'+search_type+'-search-query').val(),
+              elements = $('.row').find('.'+search_type),
+              num_elements = elements.length;  
+              var element_ids = [];
+
+          for (i = 0; i < num_elements; i++) {
+            element_ids.push($(elements[i]).attr('id'))
+          }
+          console.log(element_ids)
+          var search_url = "/"+search_type+"s/search/";
+          $.get(search_url,{"q": query}, function(data){
+            var num_results = data.id_list.length;
             if (num_results > 0) {  
-              for (i = 0; i < num_recipes; i++) {
-                for (j = 0; j < num_results; j++){
-                  var recipe_el = recipes[i];
-                  var recipe_id = $(recipe_el).attr('id');
-                  var result_id = 'recipe_'+data.recipe_id_list[j]
-                  if (recipe_id != result_id){
-                    $(recipe_el).hide();
-                  }                
-                }
+              var to_hide = [];
+              var i = 0;
+              $.grep(element_ids, function(el) {
+                  if ($.inArray(el, data.id_list) == -1) to_hide.push(el);
+                  i++;
+              });
+              for (j = 0; j < to_hide.length; j++) {
+                $('#'+to_hide[j]).hide();
               }
             } else {
-              for (i = 0; i < num_recipes; i++) {
-                var recipe_el = recipes[i];
-                $(recipe_el).show();
+              for (i = 0; i < num_elements; i++) {
+                var el = elements[i];
+                $(el).show();
               }
-            }            
+            }           
           });
+        }
+
+        $('#recipe-search-query').keypress(function (e) {
+          if (e.which == 13) {
+            search("recipe");
+          }
         });
+
+        $('#recipe-search-button').on('click',function () {
+            search("recipe");
+        });
+
+        $('#wine-search-query').keypress(function (e) {
+          if (e.which == 13) {
+            search("wine");
+          }
+        });
+
+        $('#wine-search-button').on('click',function () {
+            search("wine");
+        });
+
       </script>      
     {% endblock javascript %}
   </body>

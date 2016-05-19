@@ -16,10 +16,17 @@
 		<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
 	</div>
 
+	<div class="search">
+		<div class="input-group">
+		  <input id="wine-search-query" type="text" class="form-control" name="q" placeholder="Search">
+		  <span class="input-group-btn"><button id="wine-search-button" class="btn btn-secondary" type="button"><span class="fa fa-search" aria-hidden="true"></span></button></span>
+		</div>
+	</div>	
+
 	{% if wine_list %}
 		<div class="row">
 	    {% for wine in wine_list %}
-	    	<div id="wine_{{ wine.id }}" class="col-md-3">
+	    	<div id="wine_{{ wine.id }}" class="wine col-md-3">
 		    	<div class="card text-xs-center">
 		    		<div class="card-block">
 		    			<h5 class="card-title">{{ wine.title }}</h5>
