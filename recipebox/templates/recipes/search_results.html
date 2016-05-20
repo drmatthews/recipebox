@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="wrapper">
+{% for r in result %}
+  <a href="{% url 'show_recipe' r.id %}">{{ r.title }}</a>
+{% endfor %}
+</div>
+{% endblock %}
