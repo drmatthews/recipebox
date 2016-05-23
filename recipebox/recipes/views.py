@@ -323,72 +323,72 @@ class RecipeDetail(LoginRequiredMixin,DetailView):
 ###############################################
 ## search
 ###############################################
-class JSONResponseMixin(object):
-    """
-    A mixin that can be used to render a JSON response.
-    """
-    def render_to_json_response(self, context, **response_kwargs):
-        """
-        Returns a JSON response, transforming 'context' to make the payload.
-        """
-        return JsonResponse(
-            self.get_data(context),
-            **response_kwargs
-        )
-
-    def get_data(self, context):
-        """
-        Returns an object that will be serialized as JSON by json.dumps().
-        """
-        # Note: This is *EXTREMELY* naive; in reality, you'll need
-        # to do much more complex handling to ensure that arbitrary
-        # objects -- such as Django model instances or querysets
-        # -- can be serialized as JSON.
-        return context
-
-class RecipeSearchListView(JSONResponseMixin,TemplateView):
-    model = Recipe
-
-    def get_queryset(self):
-        result = super(RecipeSearchListView, self).get_queryset()
-        query = self.request.GET.get('q')
-        if query:
-            query_list = query.split()
-            result = result.filter(
-                reduce(operator.and_,
-                       (Q(title__icontains=q) for q in query_list)) |
-                reduce(operator.and_,
-                       (Q(description__icontains=q) for q in query_list))
-            )
-            ids = ['recipe_'+str(r.id) for r in result]
-        else:
-            ids = []
-            
-        self.data = {'id_list': ids} 
-
-    def get_context_data(self, **kwargs):
-        context = super(RecipeSearchListView, self).get_context_data(**kwargs)
-        context['id_list'] = self.data['id_list']
-        return context        
-
-    def render_to_response(self, context, **response_kwargs):
-        return self.render_to_json_response(context, **response_kwargs)
-
-# def recipe_search(request):
-
-#     result = Recipe.objects.all()
-#     query = request.GET.get('q')
-#     if query:
-#         query_list = query.split()
-#         result = result.filter(
-#             reduce(operator.and_,
-#                    (Q(title__icontains=q) for q in query_list)) |
-#             reduce(operator.and_,
-#                    (Q(description__icontains=q) for q in query_list))
+# class JSONResponseMixin(object):
+#     """
+#     A mixin that can be used to render a JSON response.
+#     """
+#     def render_to_json_response(self, context, **response_kwargs):
+#         """
+#         Returns a JSON response, transforming 'context' to make the payload.
+#         """
+#         return JsonResponse(
+#             self.get_data(context),
+#             **response_kwargs
 #         )
-#         ids = ['recipe_'+str(r.id) for r in result]
-#     else:
-#         ids = []
+
+#     def get_data(self, context):
+#         """
+#         Returns an object that will be serialized as JSON by json.dumps().
+#         """
+#         # Note: This is *EXTREMELY* naive; in reality, you'll need
+#         # to do much more complex handling to ensure that arbitrary
+#         # objects -- such as Django model instances or querysets
+#         # -- can be serialized as JSON.
+#         return context
+
+# class RecipeSearchListView(JSONResponseMixin,TemplateView):
+#     model = Recipe
+
+#     def get_queryset(self):
+#         result = super(RecipeSearchListView, self).get_queryset()
+#         query = self.request.GET.get('q')
+#         if query:
+#             query_list = query.split()
+#             result = result.filter(
+#                 reduce(operator.and_,
+#                        (Q(title__icontains=q) for q in query_list)) |
+#                 reduce(operator.and_,
+#                        (Q(description__icontains=q) for q in query_list))
+#             )
+#             ids = ['recipe_'+str(r.id) for r in result]
+#         else:
+#             ids = []
+            
+#         self.data = {'id_list': ids} 
+
+#     def get_context_data(self, **kwargs):
+#         context = super(RecipeSearchListView, self).get_context_data(**kwargs)
+#         context['id_list'] = self.data['id_list']
+#         return context        
+
+#     def render_to_response(self, context, **response_kwargs):
+#         return self.render_to_json_response(context, **response_kwargs)
+
+def recipe_search(request):
+
+    result = Recipe.objects.all()
+    query = request.GET.get('q')
+    if query:
+        query_list = query.split()
+        result = result.filter(
+            reduce(operator.and_,
+                   (Q(title__icontains=q) for q in query_list)) |
+            reduce(operator.and_,
+                   (Q(description__icontains=q) for q in query_list))
+        )
+        ids = ['recipe_'+str(r.id) for r in result]
+    else:
+        ids = []
         
-#     data = {'id_list': ids}        
-#     return JsonResponse(data)
+    data = {'id_list': ids}        
+    return JsonResponse(data)
