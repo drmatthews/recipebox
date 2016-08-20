@@ -192,11 +192,6 @@ def register(request):
             'recipes/registration.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
-
-def get_chef_from_taste(soup):
-    #return soup.find('a',{'class':'chef__link'}).contents[0]
-    return "Coles"
-
 def get_ingredients_from_taste(soup):
     section = soup.find('ul','ingredient-table').find_all('li')
     inner_list = []
@@ -204,66 +199,108 @@ def get_ingredients_from_taste(soup):
         inner_list.append(li.find('label').contents[0])
     return inner_list
 
-def get_method_from_taste(soup):
-    section = soup.find('div','content-item tab-content current method-tab-content').find('ol').find_all('li')
-    inner_list = []
-    for li in section:
-        inner_list.append(li.find('p').contents[0])
-    return inner_list
+# def get_image_from_taste(soup):
+#     link = soup.find('img','print-thumb main-image')
+#     img_temp = NamedTemporaryFile(delete=True)
+#     img_temp.write(urllib2.urlopen(link["src"]).read())
+#     img_temp.flush()
+#     return img_temp
 
-def get_image_from_taste(soup):
-    link = soup.find('img','print-thumb main-image')
-    img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urllib2.urlopen(link["src"]).read())
-    img_temp.flush()
-    return img_temp
-
-def get_description_from_taste(soup):
-    return soup.find('div','content-item quote-left-right clearfix').find('p').contents[0]
-
-def get_title_from_taste(soup):
-    return soup.find('div','heading').find('h1').contents[0]
-
-def get_chef_from_bbc(soup):
-    return soup.find('a',{'class':'chef__link'}).contents[0]
 
 def get_ingredients_from_bbc(soup): #this is the same as ingredients_from_taste except for label - no cb's
-    sections = soup.find_all('ul','recipe-ingredients__list')
-    inner_list = []
-    for s,section in enumerate(sections):
-        section_li = section.find_all('li')
-        for li in section_li:
-            li_contents = li.contents
-            li_text = []
-            for li_c in li_contents:
-                a_text = ""
-                if li_c.find('a') is None:
-                    a_text = li_c.contents[0]
-                else:
-                    li_text.append(li_c)
-                li_text.append(a_text)
-            inner_list.append("".join(li_text))
+    try:
+        sections = soup.find_all('ul','recipe-ingredients__list')
+        inner_list = []
+        for s,section in enumerate(sections):
+            section_li = section.find_all('li')
+            for li in section_li:
+                li_contents = li.contents
+                li_text = []
+                for li_c in li_contents:
+                    a_text = ""
+                    if li_c.find('a') is None:
+                        a_text = li_c.contents[0]
+                    else:
+                        li_text.append(li_c)
+                    li_text.append(a_text)
+                inner_list.append("".join(li_text))        
+    except Exception, e:
+        inner_list = ["could not find ingredients on page"]
     return inner_list
 
-def get_method_from_bbc(soup): #this is the same as method_from_taste
-    section = soup.find('div','recipe-method-wrapper').find('ol').find_all('li')
+# def get_image_from_bbc(soup): #this is the same as image_from_taste except for getting div for image
+#     link = soup.find('div','emp-placeholder').find('img')
+#     img_temp = NamedTemporaryFile(delete=True)
+#     img_temp.write(urllib2.urlopen(link["src"]).read())
+#     img_temp.flush()
+#     return img_temp
+
+### generalised functions
+
+### chef
+def get_chef(soup, source):
+    if 'bbc' in source:
+        try:
+            chef = soup.find('a',{'class':'chef__link'}).contents[0]
+        except Exception, e:
+            chef = "could not find chef on page"
+    elif 'taste' in source:
+        chef = "Coles"
+    return chef
+
+### description
+def get_description(soup, source):
+    if 'taste' in source:
+        div_class = 'content-item quote-left-right clearfix'
+    elif 'bbc' in source:
+        div_class = 'recipe-description'
+
+    try:
+        description = get_text_from_div(soup,div_class,'p')
+    except Exception, e:
+        description = "could not find description on page" 
+
+    return description        
+
+### title
+def get_title(soup, source):
+    if 'taste' in source:
+        div_class = 'heading'
+    elif 'bbc' in source:
+        div_class = 'recipe-title--small-spacing'
+
+    try:
+        title = get_text_from_div(soup,div_class,'h1')
+    except Exception, e:
+        title = "could not find title on page"   
+
+    return title         
+
+### method
+def get_method(soup, source):
+    if 'taste' in source:
+        div_class = 'content-item tab-content current method-tab-content'
+    elif 'bbc' in source:
+        div_class = 'recipe-method-wrapper'
+
+    try:
+        method = get_li_group(soup, div_class)
+    except Exception, e:
+        method = ["could not find method on page"]
+
+    return method
+
+### utilities
+def get_text_from_div(soup, div_class, el_type):
+    return soup.find('div',div_class).find(el_type).contents[0]
+
+def get_li_group(soup, div_class):
+    section = soup.find('div',div_class).find('ol').find_all('li')
     inner_list = []
     for li in section:
         inner_list.append(li.find('p').contents[0])
-    return inner_list
-
-def get_image_from_bbc(soup): #this is the same as image_from_taste except for getting div for image
-    link = soup.find('div','emp-placeholder').find('img')
-    img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urllib2.urlopen(link["src"]).read())
-    img_temp.flush()
-    return img_temp
-
-def get_description_from_bbc(soup): #this is the same as description_from_taste
-    return soup.find('div','recipe-description').find('p').contents[0]
-
-def get_title_from_bbc(soup): #this is the same as title_from_taste
-    return soup.find('div','recipe-title--small-spacing').find('h1').contents[0]
+    return inner_list    
+###
 
 def create_recipe(source,title,chef,description,ingredients,steps):
     recipe = Recipe()
@@ -290,20 +327,20 @@ def process_url(url,site):
     print site
     if "bbc" in site:
         ingredients = get_ingredients_from_bbc(soup)
-        steps = get_method_from_bbc(soup)
+        steps = get_method(soup, "bbc")
         # picture = get_image_from_bbc(soup)
-        description = get_description_from_bbc(soup)
-        chef = get_chef_from_bbc(soup)
-        title = get_title_from_bbc(soup)
-        recipe = create_recipe(site,title,chef,description,ingredients,steps)        
+        description = get_description(soup, "bbc")
+        chef = get_chef(soup, "bbc")
+        title = get_title(soup,"bbc")        
     elif "taste" in site:
         ingredients = get_ingredients_from_taste(soup)
-        steps = get_method_from_taste(soup)
+        steps = get_method(soup, "taste")
         # picture = get_image_from_taste(soup)
-        description = get_description_from_taste(soup)
-        chef = get_chef_from_taste(soup)
-        title = get_title_from_taste(soup)
-        recipe = create_recipe(site,title,chef,description,ingredients,steps)
+        description = get_description(soup, "taste")
+        chef = get_chef(soup, "taste")
+        title = get_title(soup,"taste")
+    
+    recipe = create_recipe(site,title,chef,description,ingredients,steps)
     return recipe
 
 ############################################
