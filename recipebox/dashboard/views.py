@@ -14,7 +14,7 @@ from django.forms.models import model_to_dict
 from recipebox.recipes.models import Recipe, Ingredient, MethodStep
 from recipebox.wines.models import WineNote
 from recipebox.recipes.forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
-                          ImportForm
+                          ImportForm, ExternalRecipeForm
 from recipebox.wines.forms import WineNoteForm
 
 import os
@@ -34,9 +34,10 @@ def dashboard(request, template_name='dash.html'):
     method_formset = MethodStepFormSet(instance=Recipe())    
     import_form = ImportForm()
     wine_form = WineNoteForm()
+    external_form = ExternalRecipeForm()
     context = {'recipe_form': recipe_form, 'ingredient_formset':ingredient_formset,\
                 'method_formset': method_formset, 'import_form':import_form,\
-                'wine_form': wine_form}
+                'wine_form': wine_form, 'external_form': external_form}
     return render(request, template_name, context)
 
 @login_required(login_url='/accounts/login/')

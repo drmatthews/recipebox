@@ -38,5 +38,13 @@ class Ingredient(models.Model):
 
 class MethodStep(models.Model):
     recipe = models.ForeignKey(Recipe)
-    step = models.TextField(max_length=500)   
+    step = models.TextField(max_length=500)
+
+class ExternalRecipe(models.Model):
+    source = models.CharField(blank=True,max_length=200)
+    title_class = models.CharField(blank=True,max_length=200)
+    chef_class = models.CharField(blank=True,max_length=200)    
+    description_class = models.CharField(blank=True,max_length=200)
+    ingredients_class = models.CharField(blank=True,max_length=200)    
+    method_class = models.CharField(blank=True,max_length=200)    
     

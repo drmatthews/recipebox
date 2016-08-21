@@ -18,10 +18,10 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Recipe, Ingredient, MethodStep
+from .models import Recipe, Ingredient, MethodStep, ExternalRecipe
 from recipebox.wines.models import WineNote
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
-                  UserForm, UserProfileForm, ImportForm
+                  UserForm, UserProfileForm, ImportForm, ExternalRecipeForm
 
 import os  
 import operator            
@@ -29,13 +29,61 @@ import urlparse
 import urllib,urllib2
 from bs4 import BeautifulSoup
 
-############################################
-##      CRUD
-############################################
+### user login and logout
 
-############################################
-##      recipes
-############################################
+@login_required(login_url='/accounts/login/')
+def logout(request):
+    auth.logout(request)
+    messages.add_message(request, messages.INFO, \
+                         'Successfully logged out. Login again to create recipes')
+    return HttpResponseRedirect(reverse('login'))
+
+def custom_login(request):
+    response = login(request,template_name='/accounts/login/')
+    if request.user.is_authenticated():
+         messages.info(request, "Welcome ...")
+    return response
+
+def register(request):
+
+    registered = False
+
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+
+            user.set_password(user.password)
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+
+            profile.save()
+
+            registered = True
+            return HttpResponseRedirect(reverse('recipes'))
+
+        else:
+            print user_form.errors, profile_form.errors
+
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+
+    return render(request,
+            'recipes/registration.html',
+            {'user_form': user_form, 'profile_form': profile_form,\
+             'registered': registered})
+
+####################################################################
+
+###  recipes
 
 @login_required(login_url='/accounts/login/')
 def recipe_list(request, template_name='recipes/recipes.html'):
@@ -125,6 +173,7 @@ def recipe_delete_ajax(request):
         return redirect('recipes')
 
 ##################################################
+### import recipe from url
 
 @login_required(login_url='/accounts/login/')
 def recipe_import(request, template_name='recipes/recipe_import.html'):
@@ -144,53 +193,76 @@ def recipe_import(request, template_name='recipes/recipe_import.html'):
     return render(request, template_name, {'import_form':import_form})
 
 @login_required(login_url='/accounts/login/')
-def logout(request):
-    auth.logout(request)
-    messages.add_message(request, messages.INFO, \
-                         'Successfully logged out. Login again to create recipes')
-    return HttpResponseRedirect(reverse('login'))
+def define_external(request, template_name='recipes/external_recipe.html'):
 
-def custom_login(request):
-    response = login(request,template_name='/accounts/login/')
-    if request.user.is_authenticated():
-         messages.info(request, "Welcome ...")
-    return response
-
-def register(request):
-
-    registered = False
-
-    if request.method == 'POST':
-        user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-
-            user.set_password(user.password)
-            user.save()
-
-            profile = profile_form.save(commit=False)
-            profile.user = user
-
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
-
-            profile.save()
-
-            registered = True
-	    return HttpResponseRedirect(reverse('recipes'))
-
-        else:
-            print user_form.errors, profile_form.errors
-
+    if request.POST:
+        external_form = ExternalRecipeForm(request.POST)
+        if external_form.is_valid():
+            external_form.save()
+            return redirect('dashboard')
     else:
-        user_form = UserForm()
-        profile_form = UserProfileForm()
+        external_form = ExternalRecipeForm()
+    return render(request, template_name, {'external_form':external_form}) 
 
-    return render(request,
-            'recipes/registration.html',
-            {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+def process_url(url,site):
+    source = site.source.lower()
+    soup = BeautifulSoup(urllib2.urlopen(url).read())
+    if "bbc" in source:
+        ingredients = get_ingredients_from_bbc(soup)
+    elif "taste" in source:
+        ingredients = get_ingredients_from_taste(soup)
+
+    steps = get_method(soup, site)
+    description = get_description(soup, site)
+    chef = get_chef(soup, site)
+    title = get_title(soup, site)
+    
+    recipe = create_recipe(source,title,chef,description,ingredients,steps)
+    return recipe   
+
+def create_recipe(source,title,chef,description,ingredients,steps):
+    recipe = Recipe()
+    recipe.title = title
+    recipe.source = source
+    recipe.chef = chef
+    recipe.description = description
+    recipe.save()
+    for ingredient in ingredients:
+        recipe.ingredient_set.create(ingredient_name=ingredient)    
+    
+    for step in steps:
+        # if len(step) > 200:
+        #     step_reduced = step[:200]
+        # else:
+        #     step_reduced = step
+
+        recipe.methodstep_set.create(step=step) 
+    return recipe  
+
+###########################################################################
+### ajax recipe filtering
+def recipe_search(request):
+    result = Recipe.objects.all()
+    query = request.GET.get('q')
+    if query:
+        query_list = query.split()
+        result = result.filter(
+            reduce(operator.and_,
+                   (Q(title__icontains=q) for q in query_list)) |
+            reduce(operator.and_,
+                   (Q(description__icontains=q) for q in query_list))
+        )
+        ids = ['recipe_'+str(r.id) for r in result]
+    else:
+        ids = []
+        
+    data = {'id_list': ids}        
+    return JsonResponse(data)  
+
+###########################################################################
+### utility functions which work on external recipe model instance
+
+### site specfic - need a way of generalising
 
 def get_ingredients_from_taste(soup):
     section = soup.find('ul','ingredient-table').find_all('li')
@@ -198,14 +270,6 @@ def get_ingredients_from_taste(soup):
     for li in section:
         inner_list.append(li.find('label').contents[0])
     return inner_list
-
-# def get_image_from_taste(soup):
-#     link = soup.find('img','print-thumb main-image')
-#     img_temp = NamedTemporaryFile(delete=True)
-#     img_temp.write(urllib2.urlopen(link["src"]).read())
-#     img_temp.flush()
-#     return img_temp
-
 
 def get_ingredients_from_bbc(soup): #this is the same as ingredients_from_taste except for label - no cb's
     try:
@@ -228,63 +292,36 @@ def get_ingredients_from_bbc(soup): #this is the same as ingredients_from_taste 
         inner_list = ["could not find ingredients on page"]
     return inner_list
 
-# def get_image_from_bbc(soup): #this is the same as image_from_taste except for getting div for image
-#     link = soup.find('div','emp-placeholder').find('img')
-#     img_temp = NamedTemporaryFile(delete=True)
-#     img_temp.write(urllib2.urlopen(link["src"]).read())
-#     img_temp.flush()
-#     return img_temp
-
 ### generalised functions
 
-### chef
-def get_chef(soup, source):
-    if 'bbc' in source:
-        try:
-            chef = soup.find('a',{'class':'chef__link'}).contents[0]
-        except Exception, e:
-            chef = "could not find chef on page"
-    elif 'taste' in source:
-        chef = "Coles"
-    return chef
-
-### description
-def get_description(soup, source):
-    if 'taste' in source:
-        div_class = 'content-item quote-left-right clearfix'
-    elif 'bbc' in source:
-        div_class = 'recipe-description'
-
+def get_chef(soup, site):
     try:
-        description = get_text_from_div(soup,div_class,'p')
+        chef = soup.find('a',{'class':site.chef_class}).contents[0]
+    except Exception, e:
+        chef = "could not find chef on page"
+
+    return chef    
+  
+
+def get_description(soup, site):
+    try:
+        description = get_text_from_div(soup,site.description_class,'p')
     except Exception, e:
         description = "could not find description on page" 
 
-    return description        
+    return description  
 
-### title
-def get_title(soup, source):
-    if 'taste' in source:
-        div_class = 'heading'
-    elif 'bbc' in source:
-        div_class = 'recipe-title--small-spacing'
-
+def get_title(soup, site):
     try:
-        title = get_text_from_div(soup,div_class,'h1')
+        title = get_text_from_div(soup,site.title_class,'h1')
     except Exception, e:
         title = "could not find title on page"   
 
-    return title         
+    return title            
 
-### method
-def get_method(soup, source):
-    if 'taste' in source:
-        div_class = 'content-item tab-content current method-tab-content'
-    elif 'bbc' in source:
-        div_class = 'recipe-method-wrapper'
-
+def get_method(soup, site):
     try:
-        method = get_li_group(soup, div_class)
+        method = get_li_group(soup, site.method_class)
     except Exception, e:
         method = ["could not find method on page"]
 
@@ -300,48 +337,9 @@ def get_li_group(soup, div_class):
     for li in section:
         inner_list.append(li.find('p').contents[0])
     return inner_list    
-###
-
-def create_recipe(source,title,chef,description,ingredients,steps):
-    recipe = Recipe()
-    recipe.title = title
-    recipe.source = source
-    recipe.chef = chef
-    recipe.description = description
-    recipe.save()
-    for ingredient in ingredients:
-        recipe.ingredient_set.create(ingredient_name=ingredient)    
-    
-    for step in steps:
-        # if len(step) > 200:
-        #     step_reduced = step[:200]
-        # else:
-        #     step_reduced = step
-
-        recipe.methodstep_set.create(step=step) 
-    return recipe
+###############################################################
 
 
-def process_url(url,site):
-    soup = BeautifulSoup(urllib2.urlopen(url).read())
-    print site
-    if "bbc" in site:
-        ingredients = get_ingredients_from_bbc(soup)
-        steps = get_method(soup, "bbc")
-        # picture = get_image_from_bbc(soup)
-        description = get_description(soup, "bbc")
-        chef = get_chef(soup, "bbc")
-        title = get_title(soup,"bbc")        
-    elif "taste" in site:
-        ingredients = get_ingredients_from_taste(soup)
-        steps = get_method(soup, "taste")
-        # picture = get_image_from_taste(soup)
-        description = get_description(soup, "taste")
-        chef = get_chef(soup, "taste")
-        title = get_title(soup,"taste")
-    
-    recipe = create_recipe(site,title,chef,description,ingredients,steps)
-    return recipe
 
 ############################################
 ##      recipes - class based views
@@ -410,22 +408,3 @@ class RecipeDetail(LoginRequiredMixin,DetailView):
 
 #     def render_to_response(self, context, **response_kwargs):
 #         return self.render_to_json_response(context, **response_kwargs)
-
-def recipe_search(request):
-
-    result = Recipe.objects.all()
-    query = request.GET.get('q')
-    if query:
-        query_list = query.split()
-        result = result.filter(
-            reduce(operator.and_,
-                   (Q(title__icontains=q) for q in query_list)) |
-            reduce(operator.and_,
-                   (Q(description__icontains=q) for q in query_list))
-        )
-        ids = ['recipe_'+str(r.id) for r in result]
-    else:
-        ids = []
-        
-    data = {'id_list': ids}        
-    return JsonResponse(data)

@@ -15,6 +15,7 @@ urlpatterns = [
     #url(r'^new/$', views.recipe_form, name='new_recipe'),
     url(r'^new/$', views.recipe_create, name='new_recipe'),
     url(r'^import/$', views.recipe_import, name='import_recipe'),
+    url(r'^define/$', views.define_external, name='define_external'),    
     #url(r'^edit/(?P<recipe_id>[0-9]+)/$', views.recipe_form, name='edit_recipe'),
     url(r'^edit/(?P<recipe_id>[0-9]+)/$', views.recipe_update, name='edit_recipe'),
     url(r'^delete/(?P<recipe_id>[0-9]+)/$', views.recipe_delete, name='delete_recipe'),
