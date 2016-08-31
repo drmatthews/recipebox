@@ -7,8 +7,8 @@ from django.forms import inlineformset_factory
 from .models import Recipe, Ingredient, MethodStep, UserProfile, ExternalRecipe
 from recipebox.wines.models import WineNote
 
-MAX_INGREDIENTS = 1
-MAX_STEPS = 1
+INITIAL_INGREDIENTS = 1
+INITIAL_STEPS = 1
 
 def get_wines():
     wines = WineNote.objects.all()
@@ -30,7 +30,7 @@ class RecipeForm(ModelForm):
         super(RecipeForm, self).__init__(*args, **kwargs)
 
         self.fields['matched_wine'] = WineNoteModelChoiceField(
-            queryset=WineNote.objects.all(), \
+            queryset=WineNote.objects.all(),
             required=False, empty_label="No matching wine" )
 
         for field in iter(self.fields):
@@ -87,7 +87,7 @@ class ImportForm(Form):
         super(ImportForm, self).__init__(*args, **kwargs)
 
         self.fields['source'] = ExternalSourceChoiceField(
-            queryset=ExternalRecipe.objects.all(), \
+            queryset=ExternalRecipe.objects.all(),
             required=False, empty_label="No external sources defined" )
 
         for field in iter(self.fields):
@@ -97,19 +97,19 @@ class ImportForm(Form):
 
     url = CharField(max_length=200)
 
-MethodStepFormSet = inlineformset_factory(Recipe,\
-    MethodStep,\
-    can_delete=True,\
-    extra=MAX_STEPS,\
-    fields=('step',),\
-    widgets={'step': Textarea(attrs={'cols': 80, 'rows': 2, 'class': 'form-control',\
+MethodStepFormSet = inlineformset_factory(Recipe,
+    MethodStep,
+    can_delete=True,
+    extra=INITIAL_STEPS,
+    fields=('step',),
+    widgets={'step': Textarea(attrs={'cols': 80, 'rows': 2, 'class': 'form-control',
              'placeholder': 'method step ...'})})
 
-IngredientFormSet = inlineformset_factory(Recipe,\
-    Ingredient,\
-    can_delete=True,\
-    extra=MAX_INGREDIENTS,\
-    fields=('ingredient_name',),\
-    widgets={'ingredient_name': TextInput(attrs={'class': 'form-control',\
+IngredientFormSet = inlineformset_factory(Recipe,
+    Ingredient,
+    can_delete=True,
+    extra=INITIAL_INGREDIENTS,
+    fields=('ingredient_name',),
+    widgets={'ingredient_name': TextInput(attrs={'class': 'form-control',
               'placeholder': 'ingredient ...'})})
 

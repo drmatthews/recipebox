@@ -150,14 +150,16 @@
 
         $('.ingredient-formset').formset({
             addText: 'add ingredient',
-            addCssClass: 'btn btn-success'
+            addCssClass: 'btn btn-success',
+            prefix: 'ingredient_set'
         });
 
         $('.method-formset').formset({
             addText: 'add method step',
             deleteText: '<span class="fa fa-trash" aria-hidden="true"></span>',
             addCssClass: 'btn btn-success',
-            deleteCssClass: 'btn btn-danger'            
+            deleteCssClass: 'btn btn-danger',
+            prefix: 'methodstep_set'
         });             
 
         $("#id_recipe_picture").change(function(){
@@ -245,24 +247,26 @@
 
         function deleteRecipe(id, title){
           console.log(id,title)
-          $('#confirm').find('.modal-body').append('<p>Are you sure you want to delete '+title+'?</p>');
-          $('#confirm').modal('show');
-          $('#delete').on('click',function(){
+          $('#confirm-modal').find('.modal-body').html("");
+          $('#confirm-modal').find('.modal-body').append('<p>Are you sure you want to delete '+title+'?</p>');
+          $('#confirm-modal').modal('show');
+          $('#confirm').on('click',function(){
             $.post("{% url 'delete_recipe_ajax' %}",{"id": id},function(){
               $('#recipe_'+id).remove();
-              $('#confirm').modal('hide');
+              $('#confirm-modal').modal('hide');
             });
           });
         }
 
         function deleteWine(id, title){
           console.log(id,title)
-          $('#confirm').find('.modal-body').append('<p>Are you sure you want to delete '+title+'?</p>');
-          $('#confirm').modal('show');
-          $('#delete').on('click',function(){
+          $('#confirm-modal').find('.modal-body').html("");
+          $('#confirm-modal').find('.modal-body').append('<p>Are you sure you want to delete '+title+'?</p>');
+          $('#confirm-modal').modal('show');
+          $('#confirm').on('click',function(){
             $.post("{% url 'delete_wine_ajax' %}",{"id": id},function(){
               $('#wine_'+id).remove();
-              $('#confirm').modal('hide');
+              $('#confirm-modal').modal('hide');
             });
           });
         }
