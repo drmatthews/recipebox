@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^(?P<recipe_id>[0-9]+)/$', views.recipe_show, name='show_recipe'),
     # url(r'^search/$', views.RecipeSearchListView.as_view(), name='recipe_search'), 
     url(r'^search/$', views.recipe_search, name='recipe_search'),           
+    url(r'^inspiration/$', views.recipe_inspiration, name='inspiration'),       
 ]
 

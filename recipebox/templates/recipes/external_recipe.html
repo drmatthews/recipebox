@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="{% url 'define_external' %}" method='post'>{% csrf_token %}
+	<div class="form-group">
+		{{ external_form.as_p }}
+	</div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<a href="{% url 'recipes'%}">Back to recipes list</a>
+
+{% endblock %}

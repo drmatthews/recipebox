@@ -260,6 +260,13 @@ def recipe_search(request):
     return JsonResponse(data)  
 
 ###########################################################################
+### food2fork api searching
+@login_required(login_url='/accounts/login/')
+def recipe_inspiration(request,template_name='recipes/inspiration.html'):
+    return render(request, template_name)
+
+
+###########################################################################
 ### utility functions which work on external recipe model instance
 
 ### site specfic - need a way of generalising
