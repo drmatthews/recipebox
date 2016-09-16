@@ -23,11 +23,13 @@ from recipebox.wines.models import WineNote
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
                   UserForm, UserProfileForm, ImportForm, ExternalRecipeForm
 
-import os  
+import os
+import json  
 import operator            
 import urlparse    
 import urllib,urllib2
 from bs4 import BeautifulSoup
+import requests
 
 ### user login and logout
 
@@ -263,7 +265,24 @@ def recipe_search(request):
 ### food2fork api searching
 @login_required(login_url='/accounts/login/')
 def recipe_inspiration(request,template_name='recipes/inspiration.html'):
-    return render(request, template_name)
+    #search for shredded chicken recipes
+    url = "http://food2fork.com/api/search"
+    parameters = {
+        'key': "673a9139cc12071e81eacf740cfa0409",
+        'q': "chicken, shredded"
+    }
+    response = requests.get(url, params=parameters)
+    #get the first recipe from the response
+    recipe1 = json.loads(response.content)['recipes'][0]    
+
+    recipe_url = "http://food2fork.com/api/get"
+    recipe_parameters = {
+        'key': "673a9139cc12071e81eacf740cfa0409",
+        'rId': recipe1['recipe_id']
+    }
+    recipe = requests.get(recipe_url,params=recipe_parameters)
+    context = json.loads(recipe.content)   
+    return render(request, template_name, context)
 
 
 ###########################################################################
