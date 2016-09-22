@@ -24,5 +24,6 @@ urlpatterns = [
     # url(r'^search/$', views.RecipeSearchListView.as_view(), name='recipe_search'), 
     url(r'^search/$', views.recipe_search, name='recipe_search'),           
     url(r'^inspiration/$', views.recipe_inspiration, name='inspiration'),       
+    url(r'^food2fork/$', views.get_from_food2fork, name='get_from_food2fork'),    
 ]
 

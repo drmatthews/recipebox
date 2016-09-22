@@ -275,8 +275,6 @@
         }
 
         function search (search_type){
-
-
           var query = $('#'+search_type+'-search-query').val(),
               elements = $('.row').find('.'+search_type),
               num_elements = elements.length;  
@@ -327,6 +325,24 @@
         $('#wine-search-button').on('click',function () {
             search("wine");
         });
+
+        function inspiration(){
+          var query = $('#recipe-inspiration-query').val(),
+              url = "{% url 'inspiration' %}";
+          $.get(url,{"q": query}, function(data){
+            
+          });
+        }  
+
+        $('#recipe-inspiration-query').keypress(function (e) {
+          if (e.which == 13) {
+            inspiration();
+          }
+        });
+
+        $('#recipe-inspiration-button').on('click',function () {
+            inspiration();
+        });              
 
       </script>      
     {% endblock javascript %}

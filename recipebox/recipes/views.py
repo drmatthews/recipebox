@@ -266,23 +266,46 @@ def recipe_search(request):
 @login_required(login_url='/accounts/login/')
 def recipe_inspiration(request,template_name='recipes/inspiration.html'):
     #search for shredded chicken recipes
-    url = "http://food2fork.com/api/search"
-    parameters = {
-        'key': "673a9139cc12071e81eacf740cfa0409",
-        'q': "chicken, shredded"
-    }
-    response = requests.get(url, params=parameters)
-    #get the first recipe from the response
-    recipe1 = json.loads(response.content)['recipes'][0]    
+    if request.is_ajax:
+        q = request.GET.get("q")
+        print q
+        if q:
+            url = "http://food2fork.com/api/search"
+            recipe_url = "http://food2fork.com/api/get"
 
-    recipe_url = "http://food2fork.com/api/get"
-    recipe_parameters = {
-        'key': "673a9139cc12071e81eacf740cfa0409",
-        'rId': recipe1['recipe_id']
-    }
-    recipe = requests.get(recipe_url,params=recipe_parameters)
-    context = json.loads(recipe.content)   
+            parameters = {
+                'key': "673a9139cc12071e81eacf740cfa0409",
+                'q': q
+            }
+            response = requests.get(url, params=parameters)
+            #get the first recipe from the response
+            recipe_list = json.loads(response.content)['recipes']
+            context = {'recipe_list': recipe_list}   
+        else:
+            context = {'recipe_list': None}
+    else:
+        context = {'recipe_list': None}
     return render(request, template_name, context)
+
+@login_required(login_url='/accounts/login/')
+def get_from_food2fork(request,template_name='recipes/recipe_detail.html'):
+    #search for shredded chicken recipes
+    if request.POST:
+        recipe_id = request.POST.get('recipe_id')
+        print request.POST
+        recipe_url = "http://food2fork.com/api/get"
+
+        recipe_parameters = {
+            'key': "673a9139cc12071e81eacf740cfa0409",
+            'rId': recipe_id
+        }
+        recipe = requests.get(recipe_url,
+                params=recipe_parameters)
+
+        context = {'recipe': json.loads(recipe.content)}   
+    else:
+        context = {'recipe': None}
+    return render(request, template_name, context)    
 
 
 ###########################################################################
