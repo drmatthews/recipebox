@@ -264,7 +264,7 @@ def recipe_search(request):
 ###########################################################################
 ### food2fork api searching
 @login_required(login_url='/accounts/login/')
-def recipe_inspiration(request,template_name='recipes/inspiration.html'):
+def recipe_inspiration(request):
     #search for shredded chicken recipes
     if request.is_ajax:
         q = request.GET.get("q")
@@ -280,11 +280,14 @@ def recipe_inspiration(request,template_name='recipes/inspiration.html'):
             response = requests.get(url, params=parameters)
             #get the first recipe from the response
             recipe_list = json.loads(response.content)['recipes']
-            context = {'recipe_list': recipe_list}   
+            context = {'recipe_list': recipe_list}
+            template_name = 'recipes/inspiration_results.html'   
         else:
             context = {'recipe_list': None}
+            template_name = 'recipes/inspiration.html'
     else:
         context = {'recipe_list': None}
+        template_name = 'recipes/inspiration.html'
     return render(request, template_name, context)
 
 @login_required(login_url='/accounts/login/')
