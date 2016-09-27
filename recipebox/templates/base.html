@@ -329,20 +329,23 @@
         function inspiration(){
           var query = $('#recipe-inspiration-query').val(),
               url = "{% url 'inspiration' %}";
+          console.log(query)
           $.get(url,{"q": query}, function(data){
-            
+            $('#inspiration-results').html(data);
           });
         }  
 
-        $('#recipe-inspiration-query').keypress(function (e) {
-          if (e.which == 13) {
+        $('#inspiration-form').on('submit',function (e) {
+            e.preventDefault();
             inspiration();
-          }
-        });
+        });      
 
-        $('#recipe-inspiration-button').on('click',function () {
-            inspiration();
-        });              
+        function getFood2ForkRecipe(id){
+          var url = "{% url 'get_from_food2fork' %}";
+          $.get(url, {'recipe_id':id}, function(data){
+            console.log(data.title)
+          });
+        }        
 
       </script>      
     {% endblock javascript %}

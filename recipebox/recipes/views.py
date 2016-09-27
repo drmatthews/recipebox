@@ -293,9 +293,9 @@ def recipe_inspiration(request):
 @login_required(login_url='/accounts/login/')
 def get_from_food2fork(request,template_name='recipes/recipe_detail.html'):
     #search for shredded chicken recipes
-    if request.POST:
-        recipe_id = request.POST.get('recipe_id')
-        print request.POST
+    if request.is_ajax:
+        recipe_id = request.GET.get('recipe_id')
+        print "recipe_id",recipe_id
         recipe_url = "http://food2fork.com/api/get"
 
         recipe_parameters = {
@@ -305,10 +305,11 @@ def get_from_food2fork(request,template_name='recipes/recipe_detail.html'):
         recipe = requests.get(recipe_url,
                 params=recipe_parameters)
 
-        context = {'recipe': json.loads(recipe.content)}   
+        context = {'recipe': json.loads(recipe.content)}  
+        return JsonResponse(context) 
     else:
         context = {'recipe': None}
-    return render(request, template_name, context)    
+        return render(request, template_name, context)    
 
 
 ###########################################################################

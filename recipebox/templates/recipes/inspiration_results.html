@@ -1,12 +1,10 @@
 {% if recipe_list %}
 	<ul>
 	{% for recipe in recipe_list %}
-		<form id="recipe_{{ recipe.recipe_id }}" method="post">{% csrf_token %}
-			<li>
-				<input type="hidden" value="{{ recipe.recipe_id }}" name="recipe_id">
-				<a href="{% url 'get_from_food2fork' %}" onclick="document.getElementById('recipe_'+{{ recipe.recipe_id }}).submit();"> {{recipe.title}} </a>
-			</li>
-		</form>
+		<li>
+			<input type="hidden" value="{{ recipe.recipe_id }}" name="recipe_id">
+			<a  href="#" onclick="getFood2ForkRecipe('{{recipe.recipe_id}}')""> {{recipe.recipe_id}}, {{recipe.title}} </a>
+		</li>
 	{% endfor %}
 	</ul>
 {% else %}

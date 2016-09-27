@@ -13,26 +13,13 @@
 {% block content %}
 <div class="main">
 	<div class="search">
-		<form action="{% url 'inspiration' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+		<form id="inspiration-form" action="{% url 'inspiration' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
 		<div class="input-group">
 		  <input id="recipe-inspiration-query" type="text" class="form-control" name="q" placeholder="Search">
-		  <span class="input-group-btn"><button id="recipe-inspiration-button" class="btn btn-secondary" type="button"><span class="fa fa-search" aria-hidden="true"></span></button></span>
+		  <span class="input-group-btn"><button id="recipe-inspiration-button" class="btn btn-secondary" type="submit"><span class="fa fa-search" aria-hidden="true"></span></button></span>
 		</div>
 		</form>
 	</div>
-	{% if recipe_list %}
-		<ul>
-		{% for recipe in recipe_list %}
-			<form id="recipe_{{ recipe.recipe_id }}" method="post">{% csrf_token %}
-				<li>
-					<input type="hidden" value="{{ recipe.recipe_id }}" name="recipe_id">
-					<a href="{% url 'get_from_food2fork' %}" onclick="document.getElementById('recipe_'+{{ recipe.recipe_id }}).submit();"> {{recipe.title}} </a>
-				</li>
-			</form>
-		{% endfor %}
-		</ul>
-	{% else %}
-		No recipes found
-	{% endif %}
+	<div id="inspiration-results"></div>
 </div>
 {% endblock %}
