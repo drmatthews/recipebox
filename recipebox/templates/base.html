@@ -343,7 +343,14 @@
         function getFood2ForkRecipe(id){
           var url = "{% url 'get_from_food2fork' %}";
           $.get(url, {'recipe_id':id}, function(data){
-            console.log(data.title)
+            console.log(data.recipe.title)
+            var ingredients = data.recipe.ingredients;
+            var list = '<ul><li>'+ingredients.join('</li><li>') + '</li></ul>';
+            $('#recipe_details').find('.modal-header').html('');
+            $('#recipe_details').find('.modal-body').html('');
+            $('#recipe_details').find('.modal-header').append('<h3>'+String(data.recipe.title)+'</h3>');
+            $('#recipe_details').find('.modal-body').append(list);
+            $('#recipe_details').modal('show');
           });
         }        
 

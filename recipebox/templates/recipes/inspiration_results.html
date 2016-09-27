@@ -3,7 +3,7 @@
 	{% for recipe in recipe_list %}
 		<li>
 			<input type="hidden" value="{{ recipe.recipe_id }}" name="recipe_id">
-			<a  href="#" onclick="getFood2ForkRecipe('{{recipe.recipe_id}}')""> {{recipe.recipe_id}}, {{recipe.title}} </a>
+			<a  href="#" onclick="getFood2ForkRecipe('{{recipe.recipe_id}}')"> {{recipe.recipe_id}}, {{recipe.title}} </a>
 		</li>
 	{% endfor %}
 	</ul>

@@ -306,7 +306,7 @@ def get_from_food2fork(request,template_name='recipes/recipe_detail.html'):
                 params=recipe_parameters)
 
         context = {'recipe': json.loads(recipe.content)}  
-        return JsonResponse(context) 
+        return JsonResponse(json.loads(recipe.content)) 
     else:
         context = {'recipe': None}
         return render(request, template_name, context)    
