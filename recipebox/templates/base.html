@@ -349,11 +349,11 @@
             $('#recipe_details').find('.modal-header').html('');
             $('#recipe_details').find('.modal-body').html('');
             $('#recipe_details').find('.modal-header').append('<h3>'+String(data.recipe.title)+'</h3>');
+            $('#recipe_details').find('.modal-body').append('<img src="'+data.recipe.image_url+'" height="300" width="300">');
             $('#recipe_details').find('.modal-body').append(list);
             $('#recipe_details').modal('show');
           });
         }        
-
       </script>      
     {% endblock javascript %}
   </body>
