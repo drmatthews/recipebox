@@ -11,10 +11,10 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.forms.models import model_to_dict
 
-from recipebox.recipes.models import Recipe, Ingredient, MethodStep
+from recipebox.recipes.models import Recipe, Ingredient, MethodStep, ExternalRecipe
 from recipebox.wines.models import WineNote
 from recipebox.recipes.forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
-                          ImportForm, ExternalRecipeForm
+                          ImportForm, ImportFileForm, ExternalRecipeForm
 from recipebox.wines.forms import WineNoteForm
 
 import os
@@ -33,11 +33,14 @@ def dashboard(request, template_name='dash.html'):
     ingredient_formset = IngredientFormSet(instance=Recipe())
     method_formset = MethodStepFormSet(instance=Recipe())    
     import_form = ImportForm()
+    import_file_form = ImportFileForm()
     wine_form = WineNoteForm()
     external_form = ExternalRecipeForm()
+    external_sources = ExternalRecipe.objects.all()
     context = {'recipe_form': recipe_form, 'ingredient_formset':ingredient_formset,\
                 'method_formset': method_formset, 'import_form':import_form,\
-                'wine_form': wine_form, 'external_form': external_form}
+                'wine_form': wine_form, 'external_form': external_form,\
+                'externals': external_sources, 'import_file_form': import_file_form}
     return render(request, template_name, context)
 
 @login_required(login_url='/accounts/login/')

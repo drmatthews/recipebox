@@ -21,7 +21,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Recipe, Ingredient, MethodStep, ExternalRecipe
 from recipebox.wines.models import WineNote
 from .forms import RecipeForm, IngredientFormSet, MethodStepFormSet,\
-                  UserForm, UserProfileForm, ImportForm, ExternalRecipeForm
+                  UserForm, UserProfileForm, ImportForm, \
+                  ExternalRecipeForm, ImportFileForm
 
 import os
 import json  
@@ -178,7 +179,7 @@ def recipe_delete_ajax(request):
 ### import recipe from url
 
 @login_required(login_url='/accounts/login/')
-def recipe_import(request, template_name='recipes/recipe_import.html'):
+def import_from_url(request, template_name='recipes/recipe_import.html'):
 
     if request.POST:
         import_form = ImportForm(request.POST)
@@ -204,9 +205,19 @@ def define_external(request, template_name='recipes/external_recipe.html'):
             return redirect('dashboard')
     else:
         external_form = ExternalRecipeForm()
-    return render(request, template_name, {'external_form':external_form}) 
+    return render(request, template_name, {'external_form':external_form})    
+
+
+@login_required(login_url='/accounts/login/')
+def show_external(request, external_id, template_name='recipes/external_detail.html'):
+    external = get_object_or_404(ExternalRecipe, pk=external_id)
+    return render(request, template_name, {'external': external })  
 
 def process_url(url,site):
+    '''
+    utility function for scraping the url source and
+    creating a new recipe instance
+    '''
     source = site.source.lower()
     soup = BeautifulSoup(urllib2.urlopen(url).read())
     if "bbc" in source:
@@ -220,26 +231,71 @@ def process_url(url,site):
     title = get_title(soup, site)
     
     recipe = create_recipe(source,title,chef,description,ingredients,steps)
-    return recipe   
+    return recipe     
 
-def create_recipe(source,title,chef,description,ingredients,steps):
+###########################################################################
+### import from text file
+@login_required(login_url='/accounts/login/')
+def import_from_file(request):
+    if request.method == 'POST':
+        form = ImportFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            process_file(request.FILES['file'])
+            return redirect('recipes')
+    else:
+        form = ImportFileForm()
+    return HttpResponse(form)    
+
+def index(string):
+    return len(string)+1
+
+def extract(idx, text):
+    return text[idx:].strip('\r')
+
+def recipe_from_dict(r):
     recipe = Recipe()
-    recipe.title = title
-    recipe.source = source
-    recipe.chef = chef
-    recipe.description = description
+    recipe.title = r["title"]
+    recipe.source = r["source"]
+    recipe.chef = r["chef"]
+    recipe.description = r["description"]
     recipe.save()
-    for ingredient in ingredients:
+    for ingredient in r["ingredients"]:
         recipe.ingredient_set.create(ingredient_name=ingredient)    
     
-    for step in steps:
-        # if len(step) > 200:
-        #     step_reduced = step[:200]
-        # else:
-        #     step_reduced = step
-
+    for step in r["method"]:
         recipe.methodstep_set.create(step=step) 
-    return recipe  
+    return recipe
+
+def process_file(f):
+    with open("test.txt",'rb') as f:
+        content = f.read()
+
+    content
+
+    recipe = content.split('\n')
+    recipe
+
+    keys = ["title","source","chef","description","ingredient","method"]
+    values = [index(i)+1 for i in identifiers]
+    identifiers = dict(zip(keys, values))
+
+    ingredients = []
+    method = []
+    recipe = {}
+    for line in recipe:
+        for k,v in identifiers.iter_items()
+            if k in line:
+                if "ingredient" in k:
+                    ingredients.append(extract(v,line))
+                elif "method" in k:
+                    method.append(extract(v,line))
+                else:
+                    recipe[k] = extract(v,line)
+
+    recipe["ingredients"] = ingredients
+    recipe["method"] = method
+    recipe_from_dict(recipe)
+
 
 ###########################################################################
 ### ajax recipe filtering
@@ -309,11 +365,53 @@ def get_from_food2fork(request,template_name='recipes/recipe_detail.html'):
         return JsonResponse(json.loads(recipe.content)) 
     else:
         context = {'recipe': None}
-        return render(request, template_name, context)    
+        return render(request, template_name, context)   
+
+@login_required(login_url='/accounts/login/')
+def import_from_food2fork(request):
+    if request.is_ajax:
+        recipe_id = request.POST.get('recipe_id')
+
+        recipe_url = "http://food2fork.com/api/get"
+
+        recipe_parameters = {
+            'key': "673a9139cc12071e81eacf740cfa0409",
+            'rId': recipe_id
+        }
+        f2f_recipe = json.loads(requests.get(recipe_url,
+                params=recipe_parameters).content)
+        print f2f_recipe
+        source = f2f_recipe['recipe']['publisher']
+        title = f2f_recipe['recipe']['title']
+        chef = f2f_recipe['recipe']['publisher']
+        description = "No description found"
+        ingredients = f2f_recipe['recipe']['ingredients']
+        steps = f2f_recipe['recipe']['publisher']
+        # recipe = create_recipe(source, title, chef, description,\
+                                # ingredients, steps)
 
 
 ###########################################################################
 ### utility functions which work on external recipe model instance
+def create_recipe(source,title,chef,description,ingredients,steps):
+    recipe = Recipe()
+    recipe.title = title
+    recipe.source = source
+    recipe.chef = chef
+    recipe.description = description
+    recipe.save()
+    for ingredient in ingredients:
+        recipe.ingredient_set.create(ingredient_name=ingredient)    
+    
+    for step in steps:
+        # if len(step) > 200:
+        #     step_reduced = step[:200]
+        # else:
+        #     step_reduced = step
+
+        recipe.methodstep_set.create(step=step) 
+    return recipe
+
 
 ### site specfic - need a way of generalising
 

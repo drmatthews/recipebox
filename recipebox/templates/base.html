@@ -352,6 +352,11 @@
             $('#recipe_details').find('.modal-body').append('<img src="'+data.recipe.image_url+'" height="300" width="300">');
             $('#recipe_details').find('.modal-body').append(list);
             $('#recipe_details').modal('show');
+            $('#import-recipe-btn').on('click',function(){
+              $.post("{% url 'import_from_food2fork' %}", {'recipe_id':id}, function(data){
+                console.log("done")
+              });
+            });
           });
         }        
       </script>      

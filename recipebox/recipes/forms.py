@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from django.forms import ModelForm, CharField, PasswordInput, Form, ChoiceField,\
-                         TextInput, Textarea, ModelChoiceField
+                         TextInput, Textarea, ModelChoiceField, FileField
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 from .models import Recipe, Ingredient, MethodStep, UserProfile, ExternalRecipe
@@ -96,6 +96,18 @@ class ImportForm(Form):
         })    
 
     url = CharField(max_length=200)
+
+class ImportFileForm(Form):
+    def __init__(self, *args, **kwargs):
+        super(ImportFileForm, self).__init__(*args, **kwargs)
+
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })     
+            
+    title = CharField(max_length=50)
+    file = FileField()
 
 MethodStepFormSet = inlineformset_factory(Recipe,
     MethodStep,

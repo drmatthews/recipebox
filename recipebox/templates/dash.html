@@ -20,8 +20,11 @@
           <a class="nav-link active" data-toggle="tab" href="#new-recipe" role="tab">New recipe</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-toggle="tab" href="#import-recipe" role="tab">Import recipe</a>
+          <a class="nav-link" data-toggle="tab" href="#import-recipe" role="tab">Import recipe from url</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#import-recipe-from-file" role="tab">Import recipe from file</a>
+        </li>        
         <li class="nav-item">
           <a class="nav-link" data-toggle="tab" href="#wine-note" role="tab">Wine note</a>
         </li>
@@ -97,6 +100,14 @@
               <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
+        <div class="tab-pane fade" id="import-recipe-from-file" role="tabpanel">
+          <form action="{% url 'import_recipe_file' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
+            <div class="form-group">
+              {{ import_file_form.as_p }}
+            </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>        
         <div class="tab-pane fade" id="wine-note" role="tabpanel">
           <div class="input-group">
             <span class="input-group-btn">
@@ -134,7 +145,11 @@
           </form>
         </div>
         <div class="tab-pane fade" id="external-recipe-sources" role="tabpanel">
-
+          <ul>
+          {% for external in externals %}
+            <li><a href="{% url 'show_external' external.id %}">{{ external.source }}</a></li>
+          {% endfor %}
+          </ul>
         </div>                
       </div>
     </div>

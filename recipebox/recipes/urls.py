@@ -14,8 +14,10 @@ urlpatterns = [
     url(r'^registration', views.register, name='registration'),
     #url(r'^new/$', views.recipe_form, name='new_recipe'),
     url(r'^new/$', views.recipe_create, name='new_recipe'),
-    url(r'^import/$', views.recipe_import, name='import_recipe'),
-    url(r'^define/$', views.define_external, name='define_external'),    
+    url(r'^import/$', views.import_from_url, name='import_recipe'),
+    url(r'^importfile/$', views.import_from_file, name='import_recipe_file'),
+    url(r'^define/$', views.define_external, name='define_external'),
+    url(r'^external/(?P<external_id>[0-9]+)/$', views.show_external, name='show_external'),    
     #url(r'^edit/(?P<recipe_id>[0-9]+)/$', views.recipe_form, name='edit_recipe'),
     url(r'^edit/(?P<recipe_id>[0-9]+)/$', views.recipe_update, name='edit_recipe'),
     url(r'^delete/(?P<recipe_id>[0-9]+)/$', views.recipe_delete, name='delete_recipe'),
@@ -24,6 +26,7 @@ urlpatterns = [
     # url(r'^search/$', views.RecipeSearchListView.as_view(), name='recipe_search'), 
     url(r'^search/$', views.recipe_search, name='recipe_search'),           
     url(r'^inspiration/$', views.recipe_inspiration, name='inspiration'),       
-    url(r'^food2fork/$', views.get_from_food2fork, name='get_from_food2fork'),    
+    url(r'^food2fork/$', views.get_from_food2fork, name='get_from_food2fork'),
+    url(r'^importfood2fork/$', views.import_from_food2fork, name='import_from_food2fork'),
 ]
 
