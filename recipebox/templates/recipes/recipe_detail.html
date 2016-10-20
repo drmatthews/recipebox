@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block additional_styles %}
+<style type="text/css">
+	body {
+	  background-color: transparent; 
+	  background: url("{% static 'images/kitchen_bg2.png' %}") no-repeat;
+	}
+</style>
+{% endblock %}  
+
+{% block content %}
+<div class="main">
+	{% if recipe %}
+		{{ recipe.ingredients }}
+	{% else %}
+		No recipe found
+	{% endif %}
+</div>
+{% endblock %}
