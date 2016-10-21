@@ -214,10 +214,10 @@ def show_external(request, external_id, template_name='recipes/external_detail.h
     return render(request, template_name, {'external': external })  
 
 def process_url(url,site):
-    '''
+    """
     utility function for scraping the url source and
     creating a new recipe instance
-    '''
+    """
     source = site.source.lower()
     soup = BeautifulSoup(urllib2.urlopen(url).read())
     if "bbc" in source:
@@ -240,7 +240,10 @@ def import_from_file(request):
     if request.method == 'POST':
         form = ImportFileForm(request.POST, request.FILES)
         if form.is_valid():
-            process_file(request.FILES['file'])
+            recipe = process_file(request.FILES['file'])
+            if request.user.is_authenticated():
+                recipe.user = request.user
+            recipe.save()
             return redirect('recipes')
     else:
         form = ImportFileForm()
@@ -267,23 +270,22 @@ def recipe_from_dict(r):
     return recipe
 
 def process_file(f):
-    with open("test.txt",'rb') as f:
-        content = f.read()
+    content = f.read()
 
-    content
-
-    recipe = content.split('\n')
-    recipe
+    recipe_list = content.split('\n')
+    print "recipe text",recipe_list
 
     keys = ["title","source","chef","description","ingredient","method"]
-    values = [index(i)+1 for i in identifiers]
+    values = [index(k) for k in keys]
     identifiers = dict(zip(keys, values))
-
+    print "identifiers", identifiers
     ingredients = []
     method = []
     recipe = {}
-    for line in recipe:
-        for k,v in identifiers.iter_items()
+    for line in recipe_list:
+        print "line",line
+        for k,v in identifiers.iteritems():
+            print "k",k
             if k in line:
                 if "ingredient" in k:
                     ingredients.append(extract(v,line))
@@ -291,10 +293,10 @@ def process_file(f):
                     method.append(extract(v,line))
                 else:
                     recipe[k] = extract(v,line)
-
+    print "recipe dict", recipe
     recipe["ingredients"] = ingredients
     recipe["method"] = method
-    recipe_from_dict(recipe)
+    return recipe_from_dict(recipe)
 
 
 ###########################################################################
@@ -404,11 +406,6 @@ def create_recipe(source,title,chef,description,ingredients,steps):
         recipe.ingredient_set.create(ingredient_name=ingredient)    
     
     for step in steps:
-        # if len(step) > 200:
-        #     step_reduced = step[:200]
-        # else:
-        #     step_reduced = step
-
         recipe.methodstep_set.create(step=step) 
     return recipe
 
