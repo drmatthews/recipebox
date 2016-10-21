@@ -106,8 +106,7 @@ class ImportFileForm(Form):
                 'class': 'form-control'
         })     
             
-    title = CharField(max_length=50)
-    file = FileField()
+    file = FileField(required=True)
 
 MethodStepFormSet = inlineformset_factory(Recipe,
     MethodStep,
