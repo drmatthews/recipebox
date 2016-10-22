@@ -88,7 +88,7 @@ class ImportForm(Form):
 
         self.fields['source'] = ExternalSourceChoiceField(
             queryset=ExternalRecipe.objects.all(),
-            required=False, empty_label="No external sources defined" )
+            required=False, empty_label="Imported from ..." )
 
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
