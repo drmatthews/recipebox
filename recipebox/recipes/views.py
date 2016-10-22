@@ -273,19 +273,15 @@ def process_file(f):
     content = f.read()
 
     recipe_list = content.split('\n')
-    print "recipe text",recipe_list
 
     keys = ["title","source","chef","description","ingredient","method"]
     values = [index(k) for k in keys]
     identifiers = dict(zip(keys, values))
-    print "identifiers", identifiers
     ingredients = []
     method = []
     recipe = {}
     for line in recipe_list:
-        print "line",line
         for k,v in identifiers.iteritems():
-            print "k",k
             if k in line:
                 if "ingredient" in k:
                     ingredients.append(extract(v,line))
@@ -293,7 +289,6 @@ def process_file(f):
                     method.append(extract(v,line))
                 else:
                     recipe[k] = extract(v,line)
-    print "recipe dict", recipe
     recipe["ingredients"] = ingredients
     recipe["method"] = method
     return recipe_from_dict(recipe)
@@ -446,7 +441,7 @@ def get_chef(soup, site):
     try:
         chef = soup.find('a',{'class':site.chef_class}).contents[0]
     except Exception, e:
-        chef = "could not find chef on page"
+        chef = "Unknown Chef"
 
     return chef    
   

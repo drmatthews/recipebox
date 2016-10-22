@@ -33,7 +33,7 @@ def dashboard(request, template_name='dash.html'):
     ingredient_formset = IngredientFormSet(instance=Recipe())
     method_formset = MethodStepFormSet(instance=Recipe())    
     import_form = ImportForm()
-    import_file_form = ImportFileForm()
+    import_file_form = ImportFileForm(auto_id=False)
     wine_form = WineNoteForm()
     external_form = ExternalRecipeForm()
     external_sources = ExternalRecipe.objects.all()
