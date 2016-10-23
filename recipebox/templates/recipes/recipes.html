@@ -27,21 +27,23 @@
 		<div class="row">
 	    {% for recipe in recipe_list %}
 	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-3">
-		    	<div class="card text-xs-center">
-		    		<div class="card-block">
-		    			<h5 class="card-title">{{ recipe.title }}</h5>
-		    		</div>
-				    {% if recipe.recipe_picture_url %}
-						<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.recipe_picture_url }}" class="card-img preview"></a>
-					{% else %}
-						<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/200x150?text=No+image" class="card-img"></a>
-					{% endif %}
+		    	<div class="thumbnail">
 					{% if recipe.user == request.user %}
-					<div class="card-block">
+					<div class="caption">
+						<h5>{{ recipe.title }}</h5>
 			        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
 			        	<button onclick="deleteRecipe('{{ recipe.id }}', '{{ recipe.title }}')" class="btn btn-danger btn-sm">Delete</button>
 			        </div>
+			        {% else %}		    	
+					<div class="caption">
+						<h5>{{ recipe.title }}</h5>
+			        </div>			        
 			        {% endif %}
+				    {% if recipe.recipe_picture_url %}
+						<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.recipe_picture_url }}" class="preview"></a>
+					{% else %}
+						<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/250x187.5?text=No+image" class="preview"></a>
+					{% endif %}
 		        </div>
 	        </div>
 	    {% if forloop.counter|divisibleby:4 %}
