@@ -30,19 +30,19 @@
 		    	<div class="thumbnail">
 					{% if recipe.user == request.user %}
 					<div class="caption">
-						<h5>{{ recipe.title }}</h5>
+						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h5>{{ recipe.title }}</h5></a>
 			        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
 			        	<button onclick="deleteRecipe('{{ recipe.id }}', '{{ recipe.title }}')" class="btn btn-danger btn-sm">Delete</button>
 			        </div>
 			        {% else %}		    	
 					<div class="caption">
-						<h5>{{ recipe.title }}</h5>
+						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h5>{{ recipe.title }}</h5></a>
 			        </div>			        
 			        {% endif %}
 				    {% if recipe.recipe_picture_url %}
-						<a href="{% url 'show_recipe' recipe.id %}"><img src="{{ recipe.recipe_picture_url }}" class="preview"></a>
+						<img src="{{ recipe.recipe_picture_url }}" class="preview">
 					{% else %}
-						<a href="{% url 'show_recipe' recipe.id %}"><img src="http://placehold.it/250x187.5?text=No+image" class="preview"></a>
+						<img src="http://placehold.it/250x187.5?text=No+image" class="preview">
 					{% endif %}
 		        </div>
 	        </div>

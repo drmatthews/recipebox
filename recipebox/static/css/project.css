@@ -103,6 +103,16 @@ input[readonly] {
     text-align:center;
     color:#fff !important;
     z-index:2;
+}
+
+.caption-link {
+  text-decoration: none;
+  color: white;
+}
+
+.caption-link:hover{
+  text-decoration: none;
+  color: lightgray;
 }  
 
 @media (max-width: 47.9em) {
