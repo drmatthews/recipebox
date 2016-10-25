@@ -30,6 +30,7 @@ img.bg {
 .search {
   display: inline-block;
   margin-top: -10px;
+  padding-right: 20px;
   float: right;
 }
 

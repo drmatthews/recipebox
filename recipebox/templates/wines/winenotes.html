@@ -12,17 +12,18 @@
 
 {% block content %}
 <div class="main">
-	<div class="add-new">
-		<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
-	</div>
-
-	<div class="search">
-		<div class="input-group">
-		  <input id="wine-search-query" type="text" class="form-control" name="q" placeholder="Search">
-		  <span class="input-group-btn"><button id="wine-search-button" class="btn btn-secondary" type="button"><span class="fa fa-search" aria-hidden="true"></span></button></span>
+	<div class="row">
+		<div class="add-new">
+			<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
 		</div>
-	</div>	
 
+		<div class="search">
+			<div class="input-group">
+			  <input id="wine-search-query" type="text" class="form-control" name="q" placeholder="Filter">
+			  <span class="input-group-btn"><button id="wine-search-button" class="btn btn-secondary" type="button"><span class="fa fa-search" aria-hidden="true"></span></button></span>
+			</div>
+		</div>	
+	</div>
 	{% if wine_list %}
 		<div class="row">
 	    {% for wine in wine_list %}
