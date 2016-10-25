@@ -17,7 +17,8 @@
 
     {% block css %}
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+    <!--<link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Your stuff: Third-party css libraries go here -->
 
@@ -35,54 +36,56 @@
   </head>
 
   <body>
-     <div class="m-b">
-      <nav class="main-nav navbar navbar-static-top">
-        <div class="container">
-          <button type="button" class="navbar-toggler hidden-sm-up pull-xs-right" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
-            &#9776;
-          </button>
-            <ul class="nav navbar-nav pull-xs-left">
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        </div>        
+        <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
+          <ul class="nav navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+            </li>              
+            {% if request.user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'recipes' %}">Recipes</a>
               </li>              
-              {% if request.user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'recipes' %}">Recipes</a>
-                </li>              
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'wines' %}">Wine notes</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'inspiration' %}">Inspiration</a>
-                </li>                
-              {% endif %}
-            </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'wines' %}">Wine notes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'inspiration' %}">Inspiration</a>
+              </li>                
+            {% endif %}
+          </ul>
 
 
-            <ul class="nav navbar-nav pull-xs-right">
-              {% if request.user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about' %}">About</a>
-                </li>              
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Logout" %}</a>
-                </li>
-              {% else %}
-                <li class="nav-item">
-                  <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Log In" %}</a>
-                </li>
-              {% endif %}
-            </ul>
-          </div>
+          <ul class="nav navbar-nav navbar-right">
+            {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'about' %}">About</a>
+              </li>              
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Logout" %}</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Log In" %}</a>
+              </li>
+            {% endif %}
+          </ul>
         </div>
-      </nav>
-    </div>
-
+      </div>
+    </nav>
     <div class="container">
-
       {% if messages %}
           {% for message in messages %}
               <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
@@ -107,7 +110,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
 
       <!-- Latest compiled and minified JavaScript -->
-      <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+      <!--<script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>-->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
       <!-- Your stuff: Third-party javascript libraries go here -->
 

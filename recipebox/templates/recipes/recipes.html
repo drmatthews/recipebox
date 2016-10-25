@@ -13,14 +13,16 @@
 {% block content %}
 
 <div class="main">
-	<div class="add-new">
-		<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
-	</div>
+	<div class="row">
+		<div class="add-new">
+			<a class="btn btn-success" href="{% url 'dashboard' %}">Add a new recipe or tasting note</a>
+		</div>
 
-	<div class="search">
-		<div class="input-group">
-		  <input id="recipe-search-query" type="text" class="form-control" name="q" placeholder="Filter">
-		  <span class="input-group-btn"><button id="recipe-search-button" class="btn btn-secondary" type="button"><span class="fa fa-search" aria-hidden="true"></span></button></span>
+		<div class="search">
+			<div class="input-group">
+			  <input id="recipe-search-query" type="text" class="form-control" name="q" placeholder="Filter">
+			  <span class="input-group-btn"><button id="recipe-search-button" class="btn btn-secondary" type="button"><span class="fa fa-search" aria-hidden="true"></span></button></span>
+			</div>
 		</div>
 	</div>
 	{% if recipe_list %}
