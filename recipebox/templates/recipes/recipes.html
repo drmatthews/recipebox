@@ -30,17 +30,14 @@
 	    {% for recipe in recipe_list %}
 	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-3">
 		    	<div class="thumbnail">
-					{% if recipe.user == request.user %}
-					<div class="caption">
+		    		<div class="caption">
 						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h5>{{ recipe.title }}</h5></a>
+						<div id="added-by"><span>Recipe add by {{ recipe.user }}</span></div>
+					{% if recipe.user == request.user %}
 			        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
 			        	<button onclick="deleteRecipe('{{ recipe.id }}', '{{ recipe.title }}')" class="btn btn-danger btn-sm">Delete</button>
-			        </div>
-			        {% else %}		    	
-					<div class="caption">
-						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h5>{{ recipe.title }}</h5></a>
-			        </div>			        
 			        {% endif %}
+			        </div>
 				    {% if recipe.recipe_picture_url %}
 						<img src="{{ recipe.recipe_picture_url }}" class="preview">
 					{% else %}

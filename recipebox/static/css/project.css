@@ -122,3 +122,7 @@ input[readonly] {
 .tab-content {
   padding-top: 20px;
 }
+
+#added-by {
+  padding-bottom: 10px;
+}
