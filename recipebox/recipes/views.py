@@ -211,7 +211,11 @@ def define_external(request, template_name='recipes/external_recipe.html'):
 @login_required(login_url='/accounts/login/')
 def show_external(request, external_id, template_name='recipes/external_detail.html'):
     external = get_object_or_404(ExternalRecipe, pk=external_id)
-    return render(request, template_name, {'external': external })  
+    external_form = ExternalRecipeForm(request.POST or None, instance=external)
+    if external_form.is_valid():         
+        external_form.save()
+        return redirect('dashboard')
+    return render(request, template_name, {'external_form': external_form })  
 
 def process_url(url,site):
     """

@@ -12,10 +12,11 @@
 
 {% block content %}
 <div class="main">
-	{% if external %}
-		{{ external.source }}
-	{% else %}
-		No recipe found
-	{% endif %}
+	<form action="{% url 'import_recipe' %}" method='post'>{% csrf_token %}
+		<div class="form-group">
+		  {{ external_form.as_p }}
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>	
 </div>
 {% endblock %}
