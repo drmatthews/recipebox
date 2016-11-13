@@ -21,6 +21,10 @@ img.bg {
   border-radius: 10px;
 }
 
+.img-fluid {
+  width: 100%;
+}
+
 .add-new {
   display: inline-block;
   padding-left: 20px;
@@ -124,5 +128,5 @@ input[readonly] {
 }
 
 #added-by {
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }

@@ -31,7 +31,7 @@
 	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-3">
 		    	<div class="thumbnail">
 		    		<div class="caption">
-						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h5>{{ recipe.title }}</h5></a>
+						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h1>{{ recipe.title }}</h1></a>
 						<div id="added-by"><span>Recipe add by {{ recipe.user }}</span></div>
 					{% if recipe.user == request.user %}
 			        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
