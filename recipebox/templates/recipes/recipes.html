@@ -28,20 +28,22 @@
 	{% if recipe_list %}
 		<div class="row">
 	    {% for recipe in recipe_list %}
-	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-3">
+	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-4">
 		    	<div class="thumbnail">
 		    		<div class="caption">
 						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h1>{{ recipe.title }}</h1></a>
 						<div id="added-by"><span>Recipe add by {{ recipe.user }}</span></div>
 					{% if recipe.user == request.user %}
-			        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
-			        	<button onclick="deleteRecipe('{{ recipe.id }}', '{{ recipe.title }}')" class="btn btn-danger btn-sm">Delete</button>
+						<div id="user-buttons">
+				        	<a class="btn btn-warning btn-sm" href="{% url 'edit_recipe' recipe.id %}">Edit</a>      
+				        	<button onclick="deleteRecipe('{{ recipe.id }}', '{{ recipe.title }}')" class="btn btn-danger btn-sm">Delete</button>
+			        	</div>
 			        {% endif %}
 			        </div>
 				    {% if recipe.recipe_picture_url %}
 						<img src="{{ recipe.recipe_picture_url }}" class="preview">
 					{% else %}
-						<img src="http://placehold.it/250x187.5?text=No+image" class="preview">
+						<img src="http://placehold.it/351.3x236.7?text=No+image" class="preview">
 					{% endif %}
 		        </div>
 	        </div>
@@ -52,7 +54,7 @@
 	    {% endfor %}
 	    </div>
 	    <!-- recipe delete modal -->
-		<div id="confirm-modal" class="modal hide fade" tabindex="-1" role="dialog">
+		<div id="confirm-modal" class="modal fade" tabindex="-1" role="dialog">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
