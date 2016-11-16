@@ -28,7 +28,7 @@
 	{% if recipe_list %}
 		<div class="row">
 	    {% for recipe in recipe_list %}
-	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-4">
+	    	<div id="recipe_{{ recipe.id }}" class="recipe col-md-3">
 		    	<div class="thumbnail">
 		    		<div class="caption">
 						<a href="{% url 'show_recipe' recipe.id %}" class="caption-link"><h1>{{ recipe.title }}</h1></a>
@@ -40,10 +40,10 @@
 			        	</div>
 			        {% endif %}
 			        </div>
-				    {% if recipe.recipe_picture_url %}
-						<img src="{{ recipe.recipe_picture_url }}" class="preview">
+				    {% if recipe.recipe_picture %}
+						<img src="{{ recipe.recipe_thumbnail.url }}" class="preview">
 					{% else %}
-						<img src="http://placehold.it/351.3x236.7?text=No+image" class="preview">
+						<img src="http://placehold.it/318x318?text=No+image" class="preview">
 					{% endif %}
 		        </div>
 	        </div>

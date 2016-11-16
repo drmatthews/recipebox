@@ -116,16 +116,23 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
     recipe = Recipe()
 
     if request.POST:
-        recipe_form = RecipeForm(data=request.POST or None, instance=recipe)
+
+        recipe_form = RecipeForm(request.POST or None, request.FILES, instance=recipe)
         if recipe_form.is_valid():
             ingredient_formset = IngredientFormSet(request.POST, instance=recipe)
-            method_formset = MethodStepFormSet(request.POST, instance=recipe)           
+            method_formset = MethodStepFormSet(request.POST, instance=recipe)
+
             if ingredient_formset.is_valid() and method_formset.is_valid():
                 recipe.chef = request.user.get_username()
                 recipe.source = request.user.get_username()
-                recipe.recipe_picture_url = recipe_form.cleaned_data['recipe_picture_url']
+                print request.FILES
+                if request.FILES:
+                    recipe.recipe_picture = recipe_form.cleaned_data['recipe_picture']
+                    recipe.create_thumbnail()
+
                 if request.user.is_authenticated():
                     recipe.user = request.user
+
                 recipe.save()
                 ingredient_formset.save()
                 method_formset.save()

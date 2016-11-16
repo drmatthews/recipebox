@@ -42,14 +42,14 @@
       <div class="tab-content">
         <div class="tab-pane fade in active" id="new-recipe" role="tabpanel">
           <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
-              <div class="input-group">
+              <!--<div class="input-group">
                 <span class="input-group-btn">
                   <span class="btn btn-primary btn-file">
                     Browse&hellip;<input id="id_recipe_picture" type="file" name="id_recipe_picture">
                   </span>
                 </span>
                 <input type="text" placeholder="picture to upload ..." class="form-control" readonly>
-              </div>
+              </div>-->
               {{ recipe_form.errors }}
               {{ recipe_form.non_field_errors }}
               {% for field in recipe_form %}
@@ -57,9 +57,9 @@
                   {% if field.label_tag == recipe_form.chef.label_tag %}
                       {{ field.as_hidden }}
                   {% elif field.label_tag == recipe_form.source.label_tag %}
-                      {{ field.as_hidden }}
-                  {% elif field.label_tag == recipe_form.recipe_picture_url.label_tag %}
-                      {{ field.as_hidden }}                      
+                      {{ field.as_hidden }}  
+                  {% elif field.label_tag == recipe_form.recipe_thumbnail.label_tag %}
+                      {{ field.as_hidden }}                                         
                   {% else %}
                       <div class="form-group">
                           {{ field }}
