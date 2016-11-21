@@ -91,7 +91,7 @@ AWS_HEADERS = {
 # stored files.
 
 MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
-
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 # Static Assets
 # ------------------------
