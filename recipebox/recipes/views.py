@@ -125,8 +125,9 @@ def recipe_create(request, template_name='recipes/recipe_form.html'):
             if ingredient_formset.is_valid() and method_formset.is_valid():
                 recipe.chef = request.user.get_username()
                 recipe.source = request.user.get_username()
-                print request.FILES
+
                 if request.FILES:
+                    print recipe_form.cleaned_data['recipe_picture']
                     recipe.recipe_picture = recipe_form.cleaned_data['recipe_picture']
                     recipe.create_thumbnail()
 
@@ -157,7 +158,11 @@ def recipe_update(request, recipe_id, template_name='recipes/recipe_form.html'):
         if ingredient_formset.is_valid() and method_formset.is_valid():
             recipe.chef = request.user.get_username()
             recipe.source = request.user.get_username()
-            recipe.recipe_picture_url = recipe_form.cleaned_data['recipe_picture_url']
+            print request.FILES
+            if request.FILES:
+                recipe.recipe_picture = request.FILES['recipe_picture']
+                recipe.create_thumbnail()
+
             recipe.save()
             ingredient_formset.save()
             method_formset.save()

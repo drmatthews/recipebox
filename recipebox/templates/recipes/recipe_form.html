@@ -10,17 +10,13 @@ recipe {{ recipe_id }}
 {% else %}
     <form action="{% url 'new_recipe' %}" method='post' enctype="multipart/form-data">{% csrf_token %}
 {% endif %}
-      <div class="form-group">
-        <label for="id_recipe_picture">Recipe picture:</label>
-        <input id="id_recipe_picture" class="form-control" type="file" name="id_recipe_picture">                    
-      </div>
       {% for field in recipe_form %}
           {{ field.errors }}
           {% if field.label_tag == recipe_form.chef.label_tag %}
               {{ field.as_hidden }}
           {% elif field.label_tag == recipe_form.source.label_tag %}
               {{ field.as_hidden }}
-          {% elif field.label_tag == recipe_form.recipe_picture_url.label_tag %}
+          {% elif field.label_tag == recipe_form.recipe_thumbnail.label_tag %}
               {{ field.as_hidden }}                      
           {% else %}
               <div class="form-group">
